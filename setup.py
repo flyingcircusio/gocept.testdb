@@ -9,6 +9,9 @@ setup(
     author='gocept',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
+    long_description = (
+        open(os.path.join('src', 'gocept', 'testdb', 'README.txt')).read()
+    ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data=True,
