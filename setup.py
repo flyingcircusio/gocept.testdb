@@ -17,12 +17,11 @@ setup(
     namespace_packages=['gocept'],
     install_requires=[
         'setuptools',
-        'zope.interface',
-        'zope.component',
         'SQLAlchemy',
         ],
     extras_require=dict(
         test=[
+            'zope.testing',
             'MySQL-python',
             'psycopg2',
             ]),
