@@ -31,7 +31,7 @@ class MySQL(object):
         self.create_schema()
         self.mark_testing()
 
-    def db_args(self, command, extra_args=()):
+    def login_args(self, command, extra_args=()):
         args = [
             command,
             '-h', self.db_host]
@@ -41,7 +41,7 @@ class MySQL(object):
         return args
 
     def create_db(self):
-        db_result = subprocess.call(self.db_args(
+        db_result = subprocess.call(self.login_args(
                 'mysqladmin', ['create', self.db_name]))
         if db_result != 0:
             raise SystemExit("Could not create database %r" %
@@ -50,7 +50,7 @@ class MySQL(object):
     def create_schema(self):
         if not self.schema_path:
             return
-        db_input = subprocess.Popen(get_db_args(
+        db_input = subprocess.Popen(self.login_args(
                 'mysql', [self.db_name]),
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE)
@@ -70,7 +70,7 @@ class MySQL(object):
 
     def drop(self):
         def _drop():
-            return subprocess.call(self.db_args(
+            return subprocess.call(self.login_args(
                 'mysqladmin', ['--force', 'drop', self.db_name]))
         db_result = _drop()
         if db_result != 0:
