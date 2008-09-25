@@ -2,7 +2,10 @@ gocept.testdb - temporary database creation
 ----------------------------------------------------
 
 >>> import gocept.testdb
->>> db = gocept.testdb.MySQL()
+>>> import os.path
+>>> db = gocept.testdb.MySQL(schema_path=os.path.join(
+...         os.path.dirname(gocept.testdb.__file__),
+...         'sample.sql'))
 >>> db.dsn
 'mysql://localhost/testdb-...'
 >>> import sqlalchemy
