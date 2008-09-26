@@ -1,5 +1,5 @@
 gocept.testdb - temporary database creation
-----------------------------------------------------
+-------------------------------------------
 
 gocept.testdb provides small helper classes that create and drop temporary
 databases.
