@@ -1,6 +1,15 @@
-0.2 (unreleased)
+=======
+Changes
+=======
+
+0.3 (unreleased)
 ----------------
 
+0.2 (2009-02-26)
+----------------
+
+- implemented authentication with password for mysql.
+  Passwords for postgres are still not supported, though.
 
 0.1 (2008-09-26)
 ----------------

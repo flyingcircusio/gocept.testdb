@@ -45,6 +45,7 @@ OperationalError:...
 
 
 The same procedure also works for PostgreSQL:
+(Note however that POSTGRES_PASS is not supported at the moment)
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
 >>> engine = sqlalchemy.create_engine(db.dsn)

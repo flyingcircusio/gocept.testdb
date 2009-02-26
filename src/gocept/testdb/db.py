@@ -84,6 +84,8 @@ class MySQL(Database):
             '-h', self.db_host]
         if self.db_user:
             args.extend(['-u', self.db_user])
+        if self.db_pass:
+            args.extend(['-p' + self.db_pass])
         args.extend(extra_args)
         return args
 
