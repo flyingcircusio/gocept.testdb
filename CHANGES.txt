@@ -5,6 +5,8 @@ Changes
 0.3 (unreleased)
 ----------------
 
+- PostgresQL: Don't call creadb/dropdb with ``--quite`` but only psql.
+
 0.2 (2009-02-26)
 ----------------
 

@@ -113,7 +113,7 @@ class PostgreSQL(Database):
     def login_args(self, command, extra_args=()):
         args = [
             command,
-            '--quiet', '-h', self.db_host]
+            '-h', self.db_host]
         if self.db_user:
             args.extend(['-U', self.db_user])
         args.extend(extra_args)
@@ -122,7 +122,7 @@ class PostgreSQL(Database):
     def create_schema(self):
         db_result = subprocess.call(self.login_args(
                 'psql', ['-f', self.schema_path,
-                         '-v', 'ON_ERROR_STOP=true',
+                         '-v', 'ON_ERROR_STOP=true', '--quiet',
                          self.db_name]))
         if db_result != 0:
             raise RuntimeError("Could not initialize schema in database %r." %
