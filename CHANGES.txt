@@ -7,6 +7,8 @@ Changes
 
 - Added documentation how to develop this package further.
 
+- Added doumentation about usage of `Database prefix`_
+
 
 0.3 (2010-10-15)
 ----------------
