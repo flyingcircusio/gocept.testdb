@@ -10,6 +10,9 @@ databases.
 >>> import gocept.testdb
 >>> schema = os.path.join(os.path.dirname(gocept.testdb.__file__), 'sample.sql')
 
+MySQL
+-----
+
 First, create a test database object
 
 >>> db = gocept.testdb.MySQL(schema_path=schema)
@@ -17,7 +20,7 @@ First, create a test database object
 This will use the appropriate command-line tools to create a database with a
 random name (you can specify a prefix if desired).
 Login information can be specified via environment variables
-(MYSQL_HOST default localhost, MYSQL_USER default None, MYSQL_PASS default None)
+(``MYSQL_HOST`` default localhost, ``MYSQL_USER`` default None, ``MYSQL_PASS`` default None)
 
 The dbapi DSN can then be used to connect to the database:
 
@@ -44,6 +47,8 @@ Traceback (most recent call last):
   ...
 OperationalError:...
 
+PostgreSQL
+----------
 
 The same procedure also works for PostgreSQL:
 (Note however that POSTGRES_PASS is not supported at the moment)
@@ -59,3 +64,19 @@ The same procedure also works for PostgreSQL:
 Traceback (most recent call last):
   ...
 OperationalError:...
+
+Database prefix
+---------------
+
+By default the created database is prefixed with ``testdb`` but this can be
+changed by using the ``prefix`` attribute of the constructor:
+
+>>> db = gocept.testdb.PostgreSQL(schema_path=schema)
+>>> db.dsn
+'postgres://localhost/testdb-...
+>>> db.drop()
+>>> db = gocept.testdb.PostgreSQL(schema_path=schema, prefix='my-tests')
+>>> db.dsn
+'postgres://localhost/my-tests-...
+>>> db.drop()
+
