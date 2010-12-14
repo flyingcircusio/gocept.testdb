@@ -15,7 +15,7 @@ Changes
 0.3 (2010-10-15)
 ----------------
 
-- PostgresQL: Don't call createdb/dropdb with ``--quite`` but only psql.
+- PostgreSQL: Don't call createdb/dropdb with ``--quite`` but only psql.
 
 0.2 (2009-02-26)
 ----------------
