@@ -1,0 +1,8 @@
+[buildout]
+
+[test-environment]
+MYSQL_HOST = localhost
+MYSQL_USER = wsoc
+MYSQL_PASS = secret
+POSTGRES_HOST = localhost
+POSTGRES_USER = wsoc

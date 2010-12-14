@@ -5,7 +5,7 @@ Changes
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added documentation how to develop this package further.
 
 
 0.3 (2010-10-15)
