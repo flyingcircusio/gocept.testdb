@@ -1,0 +1,5 @@
+=========
+ Hacking
+=========
+
+To run the `buildout` of this package copy ``local.cfg.example`` to ``local.cfg`` and edit it to match your needs.

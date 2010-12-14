@@ -1,9 +1,12 @@
-# Copyright (c) 2008 gocept gmbh & co. kg
+# Copyright (c) 2010 gocept gmbh & co. kg
 # See also LICENSE.txt
 
 import os.path
 from setuptools import setup, find_packages
 
+
+def read(*path):
+    return open(os.path.join(*path)).read() + '\n\n'
 
 setup(
     name='gocept.testdb',
@@ -12,11 +15,12 @@ setup(
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
     long_description = (
-        open('README.txt').read() +
-        '\n\n' +
-        open(os.path.join('src', 'gocept', 'testdb', 'README.txt')).read() +
-        '\n\n' +
-        open('CHANGES.txt').read()),
+        read('README.txt') +
+        '.. contents::\n\n' +
+        read('src', 'gocept', 'testdb', 'README.txt') +
+        read('HACKING.txt') +
+        read('CHANGES.txt')
+        ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data=True,
