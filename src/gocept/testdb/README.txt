@@ -50,6 +50,9 @@ OperationalError:...
 PostgreSQL
 ----------
 
+General
+~~~~~~~
+
 The same procedure also works for PostgreSQL:
 (Note however that POSTGRES_PASS is not supported at the moment)
 
@@ -65,11 +68,30 @@ Traceback (most recent call last):
   ...
 OperationalError:...
 
+Encoding
+~~~~~~~~
+
+For Postgres an optional encoding parameter can be specified in the
+constructor. It is used when creating the database.
+
+>>> db = gocept.testdb.PostgreSQL(schema_path=schema, encoding='UTF8')
+>>> engine = sqlalchemy.create_engine(db.dsn)
+>>> conn = engine.connect()
+>>> conn.execute(
+...     '''SELECT pg_catalog.pg_encoding_to_char(encoding) as encoding
+...        FROM pg_catalog.pg_database
+...        WHERE datname = %s''', db.dsn.split('/')[-1]).fetchall()
+[('UTF8',)]
+>>> conn.invalidate()
+>>> db.drop()
+
+
 Database prefix
 ---------------
 
 By default the created database is prefixed with ``testdb`` but this can be
-changed by using the ``prefix`` attribute of the constructor:
+changed by using the ``prefix`` attribute of the constructor: (This works
+for MySQL the same way.)
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
 >>> db.dsn

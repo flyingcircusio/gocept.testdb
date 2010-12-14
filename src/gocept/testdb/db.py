@@ -104,9 +104,12 @@ class MySQL(Database):
 class PostgreSQL(Database):
     protocol = 'postgres'
 
-    def __init__(self, *args, **kw):
+    def __init__(self, encoding=None, *args, **kw):
         super(PostgreSQL, self).__init__(*args, **kw)
-        self.cmd_create = self.login_args('createdb', [self.db_name])
+        create_args = [self.db_name]
+        if encoding:
+            create_args[0:0] = ['-E', encoding]
+        self.cmd_create = self.login_args('createdb', create_args)
         self.cmd_drop = self.login_args('dropdb', [self.db_name])
         self.create()
 
