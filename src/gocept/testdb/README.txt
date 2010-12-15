@@ -81,8 +81,8 @@ constructor. It is used when creating the database.
 ...     '''SELECT pg_catalog.pg_encoding_to_char(encoding) as encoding
 ...        FROM pg_catalog.pg_database
 ...        WHERE datname = %s''', db.dsn.split('/')[-1]).fetchall()
->>> str(encoding[0][0])
-'UTF8'
+>>> encoding in ([(u'UTF8',)], [('UTF8',)],)
+True
 >>> conn.invalidate()
 >>> db.drop()
 
