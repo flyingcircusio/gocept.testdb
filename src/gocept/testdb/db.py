@@ -102,7 +102,7 @@ class MySQL(Database):
 
 
 class PostgreSQL(Database):
-    protocol = 'postgres'
+    protocol = 'postgresql'
 
     def __init__(self, encoding=None, *args, **kw):
         super(PostgreSQL, self).__init__(*args, **kw)

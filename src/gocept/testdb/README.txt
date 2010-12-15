@@ -77,11 +77,12 @@ constructor. It is used when creating the database.
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, encoding='UTF8')
 >>> engine = sqlalchemy.create_engine(db.dsn)
 >>> conn = engine.connect()
->>> conn.execute(
+>>> encoding = conn.execute(
 ...     '''SELECT pg_catalog.pg_encoding_to_char(encoding) as encoding
 ...        FROM pg_catalog.pg_database
 ...        WHERE datname = %s''', db.dsn.split('/')[-1]).fetchall()
-[('UTF8',)]
+>>> str(encoding[0][0])
+'UTF8'
 >>> conn.invalidate()
 >>> db.drop()
 
@@ -95,10 +96,10 @@ for MySQL the same way.)
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
 >>> db.dsn
-'postgres://localhost/testdb-...
+'postgresql://localhost/testdb-...
 >>> db.drop()
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, prefix='my-tests')
 >>> db.dsn
-'postgres://localhost/my-tests-...
+'postgresql://localhost/my-tests-...
 >>> db.drop()
 

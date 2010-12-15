@@ -7,6 +7,10 @@ Changes
 
 - Added option to specify the encoding for the PostgreSQL database.
 
+- Updated PostgreSQL protocol from ``postgres:`` to ``postgresql:`` as the
+  former one is deprecated in SQLAlchemy 0.6, thus requiring atleast version
+  0.5.6 of SQLAlchemy.
+
 - Added documentation how to develop this package further.
 
 - Added doumentation about usage of `Database prefix`_
