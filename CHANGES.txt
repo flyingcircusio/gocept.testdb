@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.4 (unreleased)
+0.4 (2010-12-15)
 ----------------
 
 - Added option to specify the encoding for the PostgreSQL database.
