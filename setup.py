@@ -29,7 +29,7 @@ setup(
     namespace_packages=['gocept'],
     install_requires=[
         'setuptools',
-        'SQLAlchemy',
+        'SQLAlchemy >= 0.5.6',
         ],
     extras_require=dict(
         test=[
