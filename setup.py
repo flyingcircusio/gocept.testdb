@@ -10,7 +10,7 @@ def read(*path):
 
 setup(
     name='gocept.testdb',
-    version='0.4',
+    version='0.5dev',
     author='gocept',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
@@ -21,6 +21,7 @@ setup(
         read('HACKING.txt') +
         read('CHANGES.txt')
         ),
+    url='http://pypi.python.org/pypi/gocept.testdb',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data=True,
