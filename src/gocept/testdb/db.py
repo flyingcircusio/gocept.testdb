@@ -15,9 +15,12 @@ __all__ = ['MySQL', 'PostgreSQL']
 class Database(object):
     protocol = None # set by subclass
 
-    def __init__(self, schema_path=None, prefix='testdb'):
+    def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
-        self.db_name = '%s-%i' % (prefix, random.randint(0, 9999))
+        if db_name:
+            self.db_name = db_name
+        else:
+            self.db_name = '%s-%i' % (prefix, random.randint(0, 9999))
         self.db_host = (os.environ.get('%s_HOST' % self.protocol.upper())
                        or 'localhost')
         self.db_user = os.environ.get('%s_USER' % self.protocol.upper())
@@ -34,7 +37,7 @@ class Database(object):
 
     def create(self):
         self.create_db()
-        if self.schema_path:
+        if self.schema_path and getattr(self, 'db_template', None) is None:
             self.create_schema()
         self.mark_testing()
 
@@ -103,12 +106,20 @@ class MySQL(Database):
 
 class PostgreSQL(Database):
     protocol = 'postgresql'
+    db_template = None
 
-    def __init__(self, encoding=None, *args, **kw):
+    def __init__(self, encoding=None, db_template=None, force_template=False,
+                 *args, **kw):
         super(PostgreSQL, self).__init__(*args, **kw)
+        self.db_template = db_template
+        self.force_template = force_template
         create_args = [self.db_name]
         if encoding:
             create_args[0:0] = ['-E', encoding]
+        if db_template:
+            self.create_template(create_args[:-1])
+        if db_template:
+            create_args[0:0] = ['-T', db_template]
         self.cmd_create = self.login_args('createdb', create_args)
         self.cmd_drop = self.login_args('dropdb', [self.db_name])
         self.create()
@@ -122,11 +133,23 @@ class PostgreSQL(Database):
         args.extend(extra_args)
         return args
 
-    def create_schema(self):
+    def create_template(self, create_args):
+        if self.force_template:
+            subprocess.call(self.login_args('dropdb', [self.db_template]))
+        db_result = subprocess.call(self.login_args(
+            'createdb', create_args + [self.db_template]))
+        if db_result == 0:
+            self.create_schema(template=True)
+
+    def create_schema(self, template=False):
+        if template:
+            db_name = self.db_template
+        else:
+            db_name = self.db_name
         db_result = subprocess.call(self.login_args(
                 'psql', ['-f', self.schema_path,
                          '-v', 'ON_ERROR_STOP=true', '--quiet',
-                         self.db_name]))
+                         db_name]))
         if db_result != 0:
             raise RuntimeError("Could not initialize schema in database %r." %
-                               self.db_name)
+                               db_name)

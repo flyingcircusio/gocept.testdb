@@ -47,6 +47,13 @@ Traceback (most recent call last):
   ...
 OperationalError:...
 
+You can specify the name, the database should get:
+
+>>> db = gocept.testdb.MySQL(schema_path=schema, db_name='mytestdb')
+>>> db.dsn
+'mysql://localhost/mytestdb'
+>>> db.drop()
+
 PostgreSQL
 ----------
 
@@ -86,6 +93,48 @@ True
 >>> conn.invalidate()
 >>> db.drop()
 
+DB name
+~~~~~~~~
+
+You can specify the name, the database should get:
+
+>>> db = gocept.testdb.PostgreSQL(schema_path=schema, db_name='mytestdb')
+>>> db.dsn
+'postgresql://localhost/mytestdb'
+>>> db.drop()
+
+Templates
+~~~~~~~~~
+
+For Postgres an optional template parameter can be specified in the
+constructur. This one specifies the name of a template db which is used for the
+creation of the database. If the template db does not exist, it is created with
+the specified schema.
+
+The first time you create the database with the db_template argument, the
+template db is created (if it does not exist already) along with the requested
+db:
+
+>>> db = gocept.testdb.PostgreSQL(
+...     schema_path=schema, db_template='templatetest')
+
+Now with the template available, the schema is not used anymore to create the
+database (its created from the template):
+
+>>> db2 = gocept.testdb.PostgreSQL(
+...     schema_path='', db_template='templatetest')
+>>> engine = sqlalchemy.create_engine(db2.dsn)
+>>> conn = engine.connect()
+>>> ignore = conn.execute('SELECT * from foo')
+>>> conn.invalidate()
+
+Remove the templatetest db and the other dbs:
+
+>>> import subprocess
+>>> subprocess.call(db.cmd_drop[:-1] + ['templatetest'])
+0
+>>> db.drop()
+>>> db2.drop()
 
 Database prefix
 ---------------

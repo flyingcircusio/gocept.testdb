@@ -5,7 +5,12 @@ Changes
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added option to specify the name of the database for MySQL and PostgreSQL.
+  
+- Added option to specify a template database for PostgreSQL. If it does not
+  exist, it is created from the specified schema. It is also possible, to force
+  the creation of the template, if it is present (the current template will be
+  dropped).
 
 
 0.4 (2010-12-15)
