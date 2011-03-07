@@ -15,6 +15,7 @@ __all__ = ['MySQL', 'PostgreSQL']
 class Database(object):
 
     protocol = None  # set by subclass
+    db_template = None
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
@@ -38,7 +39,7 @@ class Database(object):
 
     def create(self):
         self.create_db()
-        if self.schema_path and getattr(self, 'db_template', None) is None:
+        if self.schema_path and self.db_template is None:
             self.create_schema()
         self.mark_testing()
 
@@ -110,7 +111,6 @@ class MySQL(Database):
 class PostgreSQL(Database):
 
     protocol = 'postgresql'
-    db_template = None
 
     def __init__(self, encoding=None, db_template=None, force_template=False,
                  *args, **kw):
