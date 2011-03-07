@@ -1,4 +1,4 @@
-# Copyright (c) 2008 gocept gmbh & co. kg
+# Copyright (c) 2008-2011 gocept gmbh & co. kg
 # See also LICENSE.txt
 
 import os
@@ -13,7 +13,8 @@ __all__ = ['MySQL', 'PostgreSQL']
 
 
 class Database(object):
-    protocol = None # set by subclass
+
+    protocol = None  # set by subclass
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
@@ -50,8 +51,9 @@ class Database(object):
         engine = sqlalchemy.create_engine(self.dsn)
         meta = sqlalchemy.MetaData()
         meta.bind = engine
-        table = sqlalchemy.Table('tmp_functest', meta,
-                                 sqlalchemy.Column('dummy', sqlalchemy.Integer))
+        table = sqlalchemy.Table(
+            'tmp_functest', meta,
+            sqlalchemy.Column('dummy', sqlalchemy.Integer))
         table.create()
         engine.dispose()
 
@@ -71,6 +73,7 @@ class Database(object):
 
 
 class MySQL(Database):
+
     protocol = 'mysql'
 
     def __init__(self, *args, **kw):
@@ -105,6 +108,7 @@ class MySQL(Database):
 
 
 class PostgreSQL(Database):
+
     protocol = 'postgresql'
     db_template = None
 
@@ -118,7 +122,6 @@ class PostgreSQL(Database):
             create_args[0:0] = ['-E', encoding]
         if db_template:
             self.create_template(create_args[:-1])
-        if db_template:
             create_args[0:0] = ['-T', db_template]
         self.cmd_create = self.login_args('createdb', create_args)
         self.cmd_drop = self.login_args('dropdb', [self.db_name])
