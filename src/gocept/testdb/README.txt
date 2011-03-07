@@ -47,7 +47,7 @@ Traceback (most recent call last):
   ...
 OperationalError:...
 
-You can specify the name, the database should get:
+You can specify the name of the database:
 
 >>> db = gocept.testdb.MySQL(schema_path=schema, db_name='mytestdb')
 >>> db.dsn
@@ -96,7 +96,7 @@ True
 DB name
 ~~~~~~~~
 
-You can specify the name, the database should get:
+You can specify the name of the database:
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, db_name='mytestdb')
 >>> db.dsn
@@ -106,10 +106,10 @@ You can specify the name, the database should get:
 Templates
 ~~~~~~~~~
 
-For Postgres an optional template parameter can be specified in the
-constructur. This one specifies the name of a template db which is used for the
-creation of the database. If the template db does not exist, it is created with
-the specified schema.
+For Postgres, an optional template parameter can be passed to the constructor.
+It specifies the name of a template db which is used for the creation of the
+database. If the template db does not exist, it is created with the specified
+schema.
 
 The first time you create the database with the db_template argument, the
 template db is created (if it does not exist already) along with the requested
@@ -119,7 +119,7 @@ db:
 ...     schema_path=schema, db_template='templatetest')
 
 Now with the template available, the schema is not used anymore to create the
-database (its created from the template):
+database (it's created from the template):
 
 >>> db2 = gocept.testdb.PostgreSQL(
 ...     schema_path='', db_template='templatetest')
@@ -128,7 +128,7 @@ database (its created from the template):
 >>> ignore = conn.execute('SELECT * from foo')
 >>> conn.invalidate()
 
-Remove the templatetest db and the other dbs:
+Clean up:
 
 >>> import subprocess
 >>> subprocess.call(db.cmd_drop[:-1] + ['templatetest'])
