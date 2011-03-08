@@ -157,13 +157,10 @@ class PostgreSQL(Database):
         if db_result != 0:
             raise SystemExit(
                 'Could not create template database %s.' % self.template_db)
-        self.create_schema(template=True)
+        self.create_schema(db_name=self.db_template)
 
-    def create_schema(self, template=False):
-        if template:
-            db_name = self.db_template
-        else:
-            db_name = self.db_name
+    def create_schema(self, db_name=None):
+        db_name = db_name or self.db_name
         db_result = subprocess.call(self.login_args(
                 'psql', ['-f', self.schema_path,
                          '-v', 'ON_ERROR_STOP=true', '--quiet',
