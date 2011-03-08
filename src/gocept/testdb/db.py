@@ -155,7 +155,7 @@ class PostgreSQL(Database):
         db_result = subprocess.call(self.login_args(
             'createdb', create_args + [self.db_template]))
         if db_result != 0:
-            raise self.SystemExit(
+            raise SystemExit(
                 'Could not create template database %s.' % self.template_db)
         self.create_schema(template=True)
 
