@@ -136,13 +136,28 @@ class PostgreSQL(Database):
         args.extend(extra_args)
         return args
 
+    def _find_db_template(self):
+        dbs, _ = subprocess.Popen(self.login_args('psql', ['-l']),
+                               stdout=subprocess.PIPE).communicate()
+        for line in dbs.splitlines():
+            if line.split('|')[0].strip() == self.db_template:
+                return True
+        else:
+            return False
+
     def create_template(self, create_args):
-        if self.force_template:
+        template_exists = self._find_db_template()
+        if template_exists and self.force_template:
             subprocess.call(self.login_args('dropdb', [self.db_template]))
+            template_exists = False
+        if template_exists:
+            return
         db_result = subprocess.call(self.login_args(
             'createdb', create_args + [self.db_template]))
-        if db_result == 0:
-            self.create_schema(template=True)
+        if db_result != 0:
+            raise self.SystemExit(
+                'Could not create template database %s.' % self.template_db)
+        self.create_schema(template=True)
 
     def create_schema(self, template=False):
         if template:
