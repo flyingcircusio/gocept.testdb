@@ -8,7 +8,9 @@ databases.
 >>> import os.path
 >>> import sqlalchemy
 >>> import gocept.testdb
->>> schema = os.path.join(os.path.dirname(gocept.testdb.__file__), 'sample.sql')
+>>> schema = os.path.join(sql_dir, 'sample.sql')
+>>> write(schema, 'CREATE TABLE foo (dummy int);')
+
 
 MySQL
 -----

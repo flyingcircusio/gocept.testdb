@@ -2,7 +2,24 @@
 # See also LICENSE.txt
 
 import doctest
+import shutil
+import tempfile
 import unittest
+
+
+def write(path, content):
+    f = open(path, 'w')
+    f.write(content)
+    f.close()
+
+
+def setUp(test):
+    test.sql_dir = tempfile.mkdtemp()
+    test.globs.update(sql_dir=test.sql_dir, write=write)
+
+
+def tearDown(test):
+    shutil.rmtree(test.sql_dir)
 
 
 def test_suite():
@@ -11,5 +28,8 @@ def test_suite():
         'README.txt',
         optionflags=doctest.ELLIPSIS
                     | doctest.NORMALIZE_WHITESPACE
-                    | doctest.REPORT_NDIFF))
+                    | doctest.REPORT_NDIFF,
+        setUp=setUp,
+        tearDown=tearDown,
+        ))
     return suite
