@@ -119,16 +119,37 @@ db:
 
 >>> db = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
+>>> table_names('postgresql://localhost/templatetest')
+[u'foo']
+>>> table_names(db.dsn)
+[u'foo', u'tmp_functest']
 
 Now with the template available, the schema is not used anymore to create the
-database (it's created from the template):
+database (it's re-created from the template). Let's modify both the database
+and the schema file before the next db creation run to demonstrate this:
+
+>>> write(schema, 'CREATE TABLE bar (dummy int);')
+>>> _ = execute(db.dsn, 'DROP TABLE foo;')
+>>> table_names(db.dsn)
+[u'tmp_functest']
 
 >>> db2 = gocept.testdb.PostgreSQL(
-...     schema_path='', db_template='templatetest')
->>> engine = sqlalchemy.create_engine(db2.dsn)
->>> conn = engine.connect()
->>> ignore = conn.execute('SELECT * from foo')
->>> conn.invalidate()
+...     schema_path=schema, db_template='templatetest')
+>>> table_names('postgresql://localhost/templatetest')
+[u'foo']
+>>> table_names(db2.dsn)
+[u'foo', u'tmp_functest']
+
+When creating the database, we can, however, force the template db to be
+created afresh from the schema. Doing so now will leave us with both a test db
+and a template db according to the modified schema:
+
+>>> db3 = gocept.testdb.PostgreSQL(
+...     schema_path=schema, db_template='templatetest', force_template=True)
+>>> table_names('postgresql://localhost/templatetest')
+[u'bar']
+>>> table_names(db3.dsn)
+[u'bar', u'tmp_functest']
 
 Clean up:
 
@@ -137,6 +158,7 @@ Clean up:
 0
 >>> db.drop()
 >>> db2.drop()
+>>> db3.drop()
 
 Database prefix
 ---------------
