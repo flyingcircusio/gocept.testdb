@@ -125,20 +125,16 @@ db:
 [u'foo', u'tmp_functest']
 
 Now with the template available, the schema is not used anymore to create the
-database (it's re-created from the template). Let's modify both the database
-and the schema file before the next db creation run to demonstrate this:
+database (it's re-created from the template). Let's modify the template db
+before the next db creation run to demonstrate this:
 
->>> write(schema, 'CREATE TABLE bar (dummy int);')
->>> _ = execute(db.dsn, 'DROP TABLE foo;')
->>> table_names(db.dsn)
-[u'tmp_functest']
-
+>>> _ = execute('postgresql://localhost/templatetest', 'DROP TABLE foo;')
 >>> db2 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
 >>> table_names('postgresql://localhost/templatetest')
-[u'foo']
+[]
 >>> table_names(db2.dsn)
-[u'foo', u'tmp_functest']
+[u'tmp_functest']
 
 When creating the database, we can, however, force the template db to be
 created afresh from the schema. Doing so now will leave us with both a test db
@@ -147,9 +143,9 @@ and a template db according to the modified schema:
 >>> db3 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
 >>> table_names('postgresql://localhost/templatetest')
-[u'bar']
+[u'foo']
 >>> table_names(db3.dsn)
-[u'bar', u'tmp_functest']
+[u'foo', u'tmp_functest']
 
 Clean up:
 
