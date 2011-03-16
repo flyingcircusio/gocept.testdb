@@ -120,7 +120,7 @@ db:
 >>> db = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
 >>> table_names('postgresql://localhost/templatetest')
-[u'foo']
+[u'foo', u'tmp_functest']
 >>> table_names(db.dsn)
 [u'foo', u'tmp_functest']
 
@@ -132,7 +132,7 @@ before the next db creation run to demonstrate this:
 >>> db2 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
 >>> table_names('postgresql://localhost/templatetest')
-[]
+[u'tmp_functest']
 >>> table_names(db2.dsn)
 [u'tmp_functest']
 
@@ -143,9 +143,20 @@ and a template db according to the modified schema:
 >>> db3 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
 >>> table_names('postgresql://localhost/templatetest')
-[u'foo']
+[u'foo', u'tmp_functest']
 >>> table_names(db3.dsn)
 [u'foo', u'tmp_functest']
+
+The template db (and with it, the test db) ist also created anew if the schema
+file is newer than the existing template db:
+
+>>> write(schema, 'CREATE TABLE bar (dummy int);')
+>>> db4 = gocept.testdb.PostgreSQL(
+...     schema_path=schema, db_template='templatetest', force_template=True)
+>>> table_names('postgresql://localhost/templatetest')
+[u'bar', u'tmp_functest']
+>>> table_names(db4.dsn)
+[u'bar', u'tmp_functest']
 
 Clean up:
 
@@ -155,6 +166,7 @@ Clean up:
 >>> db.drop()
 >>> db2.drop()
 >>> db3.drop()
+>>> db4.drop()
 
 Database prefix
 ---------------
