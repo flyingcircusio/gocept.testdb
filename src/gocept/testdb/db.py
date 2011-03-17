@@ -139,6 +139,35 @@ class PostgreSQL(Database):
         args.extend(extra_args)
         return args
 
+    def create_template(self, create_args):
+        schema_mtime = int(os.path.getmtime(self.schema_path))
+
+        if self._db_exists(self.db_template):
+            template_mtime = self._get_db_mtime(self.db_template)
+            if self.force_template or schema_mtime != template_mtime:
+                subprocess.call(self.login_args('dropdb', [self.db_template]))
+            else:
+                return
+
+        db_result = subprocess.call(self.login_args(
+            'createdb', create_args + [self.db_template]))
+        if db_result != 0:
+            raise SystemExit(
+                'Could not create template database %s.' % self.template_db)
+        self.create_schema(db_name=self.db_template)
+        self.mark_testing(self.get_dsn(self.db_template))
+        self._set_db_mtime(self.db_template, schema_mtime)
+
+    def create_schema(self, db_name=None):
+        db_name = db_name or self.db_name
+        db_result = subprocess.call(self.login_args(
+                'psql', ['-f', self.schema_path,
+                         '-v', 'ON_ERROR_STOP=true', '--quiet',
+                         db_name]))
+        if db_result != 0:
+            raise RuntimeError("Could not initialize schema in database %r." %
+                               db_name)
+
     def _db_exists(self, database):
         dbs, _ = subprocess.Popen(self.login_args('psql', ['-l']),
                                stdout=subprocess.PIPE).communicate()
@@ -168,32 +197,3 @@ class PostgreSQL(Database):
                      mtime)
         conn.invalidate()
         conn.close()
-
-    def create_template(self, create_args):
-        schema_mtime = int(os.path.getmtime(self.schema_path))
-
-        if self._db_exists(self.db_template):
-            template_mtime = self._get_db_mtime(self.db_template)
-            if self.force_template or schema_mtime != template_mtime:
-                subprocess.call(self.login_args('dropdb', [self.db_template]))
-            else:
-                return
-
-        db_result = subprocess.call(self.login_args(
-            'createdb', create_args + [self.db_template]))
-        if db_result != 0:
-            raise SystemExit(
-                'Could not create template database %s.' % self.template_db)
-        self.create_schema(db_name=self.db_template)
-        self.mark_testing(self.get_dsn(self.db_template))
-        self._set_db_mtime(self.db_template, schema_mtime)
-
-    def create_schema(self, db_name=None):
-        db_name = db_name or self.db_name
-        db_result = subprocess.call(self.login_args(
-                'psql', ['-f', self.schema_path,
-                         '-v', 'ON_ERROR_STOP=true', '--quiet',
-                         db_name]))
-        if db_result != 0:
-            raise RuntimeError("Could not initialize schema in database %r." %
-                               db_name)
