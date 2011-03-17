@@ -153,7 +153,7 @@ class PostgreSQL(Database):
             'createdb', create_args + [self.db_template]))
         if db_result != 0:
             raise SystemExit(
-                'Could not create template database %s.' % self.template_db)
+                'Could not create template database %s.' % self.db_template)
         self.create_schema(db_name=self.db_template)
         self.mark_testing(self.get_dsn(self.db_template))
         self._set_db_mtime(self.db_template, schema_mtime)
