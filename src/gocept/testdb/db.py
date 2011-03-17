@@ -139,30 +139,41 @@ class PostgreSQL(Database):
         args.extend(extra_args)
         return args
 
-    def _db_template_exists(self):
+    def _db_exists(self, database):
         dbs, _ = subprocess.Popen(self.login_args('psql', ['-l']),
                                stdout=subprocess.PIPE).communicate()
         for line in dbs.splitlines():
-            if line.split('|')[0].strip() == self.db_template:
+            if line.split('|')[0].strip() == database:
                 return True
         else:
             return False
 
+    def _get_db_mtime(self, database):
+        dsn = self.get_dsn(database)
+        conn = sqlalchemy.create_engine(dsn).connect()
+        result = conn.execute(
+            'SELECT schema_mtime FROM tmp_functest;').cursor.next()
+        conn.invalidate()
+        conn.close()
+        if result:
+            result = result[0]
+        else:
+            result = 0
+        return result
+
+    def _set_db_mtime(self, database, mtime):
+        dsn = self.get_dsn(database)
+        conn = sqlalchemy.create_engine(dsn).connect()
+        conn.execute('INSERT INTO tmp_functest (schema_mtime) VALUES (%s);' %
+                     mtime)
+        conn.invalidate()
+        conn.close()
+
     def create_template(self, create_args):
         schema_mtime = int(os.path.getmtime(self.schema_path))
-        dsn = self.get_dsn(self.db_template)
 
-        if self._db_template_exists():
-            conn = sqlalchemy.create_engine(dsn).connect()
-            result_line = conn.execute(
-                'SELECT schema_mtime FROM tmp_functest;').cursor.next()
-            conn.invalidate()
-            conn.close()
-            if result_line:
-                template_mtime = result_line[0]
-            else:
-                template_mtime = 0
-
+        if self._db_exists(self.db_template):
+            template_mtime = self._get_db_mtime(self.db_template)
             if self.force_template or schema_mtime != template_mtime:
                 subprocess.call(self.login_args('dropdb', [self.db_template]))
             else:
@@ -174,13 +185,8 @@ class PostgreSQL(Database):
             raise SystemExit(
                 'Could not create template database %s.' % self.template_db)
         self.create_schema(db_name=self.db_template)
-        self.mark_testing(dsn)
-
-        conn = sqlalchemy.create_engine(dsn).connect()
-        conn.execute('INSERT INTO tmp_functest (schema_mtime) VALUES (%s);' %
-                     schema_mtime)
-        conn.invalidate()
-        conn.close()
+        self.mark_testing(self.get_dsn(self.db_template))
+        self._set_db_mtime(self.db_template, schema_mtime)
 
     def create_schema(self, db_name=None):
         db_name = db_name or self.db_name
