@@ -14,8 +14,10 @@ __all__ = ['MySQL', 'PostgreSQL']
 
 class Database(object):
 
-    protocol = None  # set by subclass
     db_template = None
+    protocol = NotImplemented
+    cmd_create = NotImplemented
+    cmd_drop = NotImplemented
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
@@ -51,6 +53,9 @@ class Database(object):
         if db_result != 0:
             raise SystemExit("Could not create database %r" % self.db_name)
 
+    def create_schema(self):
+        raise NotImplementedError()
+
     def mark_testing(self, dsn):
         engine = sqlalchemy.create_engine(dsn)
         meta = sqlalchemy.MetaData()
@@ -71,9 +76,6 @@ class Database(object):
             db_result = _drop()
             if db_result != 0:
                 raise RuntimeError("Could not drop database %r" % self.db_name)
-
-    def create_schema(self):
-        pass
 
 
 class MySQL(Database):
