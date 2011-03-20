@@ -167,9 +167,7 @@ file is newer than the existing template db:
 
 Clean up:
 
->>> import subprocess
->>> subprocess.call(db.cmd_drop[:-1] + ['templatetest'])
-0
+>>> db.drop_db('templatetest')
 >>> db.drop()
 >>> db2.drop()
 >>> db3.drop()
