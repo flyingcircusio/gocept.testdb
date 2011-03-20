@@ -17,7 +17,6 @@ class Database(object):
     db_template = None
     protocol = NotImplemented
     cmd_create = NotImplemented
-    cmd_drop = NotImplemented
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
@@ -67,15 +66,29 @@ class Database(object):
         engine.dispose()
 
     def drop(self):
-        def _drop():
-            return subprocess.call(self.cmd_drop)
-        db_result = _drop()
-        if db_result != 0:
+        """Protocol entry point for tearing down the database on the server.
+
+        Contains retry logic independent from the choice of database engine.
+
+        """
+        try:
+            self.drop_db(self.db_name)
+        except AssertionError:
             # give the database some time to shut down
             time.sleep(1)
-            db_result = _drop()
-            if db_result != 0:
+            try:
+                self.drop_db(self.db_name)
+            except AssertionError:
                 raise RuntimeError("Could not drop database %r" % self.db_name)
+
+    def drop_db(self, db_name):
+        """Implementation of dropping a database on the server.
+
+        Depends on the choice of database engine. Raises AssertionError if the
+        server couldn't drop the database.
+
+        """
+        raise NotImplementedError
 
 
 class MySQL(Database):
@@ -86,8 +99,6 @@ class MySQL(Database):
         super(MySQL, self).__init__(*args, **kw)
         self.cmd_create = self.login_args(
                 'mysqladmin', ['create', self.db_name])
-        self.cmd_drop = self.login_args(
-                'mysqladmin', ['--force', 'drop', self.db_name])
 
     def login_args(self, command, extra_args=()):
         args = [
@@ -111,6 +122,10 @@ class MySQL(Database):
             raise RuntimeError("Could not initialize schema in database %r." %
                                self.db_name)
 
+    def drop_db(self, db_name):
+        assert 0 == subprocess.call(
+            self.login_args('mysqladmin', ['--force', 'drop', db_name]))
+
 
 class PostgreSQL(Database):
 
@@ -128,7 +143,6 @@ class PostgreSQL(Database):
             self.create_template(create_args[:-1])
             create_args[0:0] = ['-T', db_template]
         self.cmd_create = self.login_args('createdb', create_args)
-        self.cmd_drop = self.login_args('dropdb', [self.db_name])
 
     def login_args(self, command, extra_args=()):
         args = [
@@ -197,3 +211,6 @@ class PostgreSQL(Database):
                      mtime)
         conn.invalidate()
         conn.close()
+
+    def drop_db(self, db_name):
+        assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
