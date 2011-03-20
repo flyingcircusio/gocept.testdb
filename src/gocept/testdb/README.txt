@@ -123,7 +123,7 @@ db:
 >>> db = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
 >>> db.create()
->>> table_names('postgresql://localhost/templatetest')
+>>> table_names(db.get_dsn('templatetest'))
 [u'foo', u'tmp_functest']
 >>> table_names(db.dsn)
 [u'foo', u'tmp_functest']
@@ -132,11 +132,11 @@ Now with the template available, the schema is not used anymore to create the
 database (it's re-created from the template). Let's modify the template db
 before the next db creation run to demonstrate this:
 
->>> _ = execute('postgresql://localhost/templatetest', 'DROP TABLE foo;')
+>>> _ = execute(db.get_dsn('templatetest'), 'DROP TABLE foo;')
 >>> db2 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
 >>> db2.create()
->>> table_names('postgresql://localhost/templatetest')
+>>> table_names(db2.get_dsn('templatetest'))
 [u'tmp_functest']
 >>> table_names(db2.dsn)
 [u'tmp_functest']
@@ -148,7 +148,7 @@ and a template db according to the modified schema:
 >>> db3 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
 >>> db3.create()
->>> table_names('postgresql://localhost/templatetest')
+>>> table_names(db3.get_dsn('templatetest'))
 [u'foo', u'tmp_functest']
 >>> table_names(db3.dsn)
 [u'foo', u'tmp_functest']
@@ -160,7 +160,7 @@ file is newer than the existing template db:
 >>> db4 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
 >>> db4.create()
->>> table_names('postgresql://localhost/templatetest')
+>>> table_names(db4.get_dsn('templatetest'))
 [u'bar', u'tmp_functest']
 >>> table_names(db4.dsn)
 [u'bar', u'tmp_functest']
