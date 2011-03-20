@@ -15,9 +15,11 @@ databases.
 MySQL
 -----
 
-First, create a test database object
+First, instantiate a test database object and have it create the database on
+the server:
 
 >>> db = gocept.testdb.MySQL(schema_path=schema)
+>>> db.create()
 
 This will use the appropriate command-line tools to create a database with a
 random name (you can specify a prefix if desired).
@@ -54,7 +56,7 @@ You can specify the name of the database:
 >>> db = gocept.testdb.MySQL(schema_path=schema, db_name='mytestdb')
 >>> db.dsn
 'mysql://localhost/mytestdb'
->>> db.drop()
+
 
 PostgreSQL
 ----------
@@ -66,6 +68,7 @@ The same procedure also works for PostgreSQL:
 (Note however that POSTGRES_PASS is not supported at the moment)
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
+>>> db.create()
 >>> engine = sqlalchemy.create_engine(db.dsn)
 >>> conn = engine.connect()
 >>> ignore = conn.execute('SELECT * from tmp_functest')
@@ -84,6 +87,7 @@ For Postgres an optional encoding parameter can be specified in the
 constructor. It is used when creating the database.
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, encoding='UTF8')
+>>> db.create()
 >>> engine = sqlalchemy.create_engine(db.dsn)
 >>> conn = engine.connect()
 >>> encoding = conn.execute(
@@ -103,7 +107,6 @@ You can specify the name of the database:
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, db_name='mytestdb')
 >>> db.dsn
 'postgresql://localhost/mytestdb'
->>> db.drop()
 
 Templates
 ~~~~~~~~~
@@ -119,6 +122,7 @@ db:
 
 >>> db = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
+>>> db.create()
 >>> table_names('postgresql://localhost/templatetest')
 [u'foo', u'tmp_functest']
 >>> table_names(db.dsn)
@@ -131,6 +135,7 @@ before the next db creation run to demonstrate this:
 >>> _ = execute('postgresql://localhost/templatetest', 'DROP TABLE foo;')
 >>> db2 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest')
+>>> db2.create()
 >>> table_names('postgresql://localhost/templatetest')
 [u'tmp_functest']
 >>> table_names(db2.dsn)
@@ -142,6 +147,7 @@ and a template db according to the modified schema:
 
 >>> db3 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
+>>> db3.create()
 >>> table_names('postgresql://localhost/templatetest')
 [u'foo', u'tmp_functest']
 >>> table_names(db3.dsn)
@@ -153,6 +159,7 @@ file is newer than the existing template db:
 >>> write(schema, 'CREATE TABLE bar (dummy int);')
 >>> db4 = gocept.testdb.PostgreSQL(
 ...     schema_path=schema, db_template='templatetest', force_template=True)
+>>> db4.create()
 >>> table_names('postgresql://localhost/templatetest')
 [u'bar', u'tmp_functest']
 >>> table_names(db4.dsn)
@@ -178,9 +185,6 @@ for MySQL the same way.)
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
 >>> db.dsn
 'postgresql://localhost/testdb-...
->>> db.drop()
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, prefix='my-tests')
 >>> db.dsn
 'postgresql://localhost/my-tests-...
->>> db.drop()
-
