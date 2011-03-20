@@ -2,8 +2,15 @@
 Changes
 =======
 
-0.5 (unreleased)
-----------------
+1.0b1 (unreleased)
+------------------
+
+- Changed the protocol for using test databases: separated instantiating a
+  Database instance from creating the database on the server. Creating
+  Database instances is cheap now so they can be interacted with and passed
+  around, deferring the expensive database creation on the server to the
+  moment db.create() is called explicitly. This is also more symmetric with
+  respect to db.drop().
 
 - Added option to specify the name of the database for MySQL and PostgreSQL.
 

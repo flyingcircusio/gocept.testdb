@@ -88,7 +88,6 @@ class MySQL(Database):
                 'mysqladmin', ['create', self.db_name])
         self.cmd_drop = self.login_args(
                 'mysqladmin', ['--force', 'drop', self.db_name])
-        self.create()
 
     def login_args(self, command, extra_args=()):
         args = [
@@ -130,7 +129,6 @@ class PostgreSQL(Database):
             create_args[0:0] = ['-T', db_template]
         self.cmd_create = self.login_args('createdb', create_args)
         self.cmd_drop = self.login_args('dropdb', [self.db_name])
-        self.create()
 
     def login_args(self, command, extra_args=()):
         args = [
