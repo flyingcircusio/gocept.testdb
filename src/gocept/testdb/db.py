@@ -183,7 +183,7 @@ class PostgreSQL(Database):
         if self._db_exists(self.db_template):
             template_mtime = self._get_db_mtime(self.db_template)
             if self.force_template or schema_mtime != template_mtime:
-                subprocess.call(self.login_args('dropdb', [self.db_template]))
+                self.drop_db(self.db_template)
             else:
                 return
 
