@@ -59,7 +59,7 @@ class Database(object):
             raise SystemExit("Could not create database %r" % self.db_name)
         if self.schema_path:
             self.create_schema()
-        self.mark_testing(self.dsn)
+        self.mark_testing(self.db_name)
 
     def create_db(self):
         assert 0 == subprocess.call(self.cmd_create)
@@ -67,8 +67,8 @@ class Database(object):
     def create_schema(self):
         raise NotImplementedError()
 
-    def mark_testing(self, dsn):
-        engine = sqlalchemy.create_engine(dsn)
+    def mark_testing(self, db_name):
+        engine = sqlalchemy.create_engine(self.get_dsn(db_name))
         meta = sqlalchemy.MetaData()
         meta.bind = engine
         table = sqlalchemy.Table(
@@ -193,7 +193,7 @@ class PostgreSQL(Database):
             raise SystemExit(
                 'Could not create template database %s.' % self.db_template)
         self.create_schema(db_name=self.db_template)
-        self.mark_testing(self.get_dsn(self.db_template))
+        self.mark_testing(self.db_template)
         self._set_db_mtime(self.db_template, schema_mtime)
 
     def create_schema(self, db_name=None):
