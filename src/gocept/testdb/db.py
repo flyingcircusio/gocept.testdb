@@ -58,13 +58,24 @@ class Database(object):
         except AssertionError:
             raise SystemExit("Could not create database %r" % self.db_name)
         if self.schema_path:
-            self.create_schema()
+            try:
+                self.create_schema(self.db_name)
+            except AssertionError:
+                raise RuntimeError(
+                    "Could not initialize schema in database %r." %
+                    self.db_name)
         self.mark_testing(self.db_name)
 
     def create_db(self):
         assert 0 == subprocess.call(self.cmd_create)
 
-    def create_schema(self):
+    def create_schema(self, db_name):
+        """Implementation of how to load a schema into an existing database.
+
+        Depends on the choice of database engine. Raises AssertionError if the
+        schema couldn't be loaded.
+
+        """
         raise NotImplementedError()
 
     def mark_testing(self, db_name):
@@ -123,16 +134,9 @@ class MySQL(Database):
         args.extend(extra_args)
         return args
 
-    def create_schema(self):
-        db_input = subprocess.Popen(self.login_args(
-                'mysql', [self.db_name]),
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE)
-        stdout, stderr = db_input.communicate(open(self.schema_path).read())
-        if db_input.returncode != 0:
-            print stderr
-            raise RuntimeError("Could not initialize schema in database %r." %
-                               self.db_name)
+    def create_schema(self, db_name):
+        assert 0 == subprocess.call(
+            self.login_args('mysql', [db_name]), stdin=open(self.schema_path))
 
     def drop_db(self, db_name):
         assert 0 == subprocess.call(
@@ -196,15 +200,12 @@ class PostgreSQL(Database):
         self.mark_testing(self.db_template)
         self._set_db_mtime(self.db_template, schema_mtime)
 
-    def create_schema(self, db_name=None):
-        db_name = db_name or self.db_name
-        db_result = subprocess.call(self.login_args(
+    def create_schema(self, db_name):
+        assert 0 == subprocess.call(
+            self.login_args(
                 'psql', ['-f', self.schema_path,
                          '-v', 'ON_ERROR_STOP=true', '--quiet',
                          db_name]))
-        if db_result != 0:
-            raise RuntimeError("Could not initialize schema in database %r." %
-                               db_name)
 
     def _db_exists(self, database):
         dbs, _ = subprocess.Popen(self.login_args('psql', ['-l']),
