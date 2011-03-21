@@ -160,26 +160,22 @@ class PostgreSQL(Database):
         return args
 
     def create(self):
+        create_args = [self.db_name]
+        if self.encoding:
+            create_args[0:0] = ['-E', self.encoding]
         if self.db_template:
-            self.create_template()
+            self.create_template(create_args[:-1])
+            create_args[0:0] = ['-T', self.db_template]
+            self.cmd_create = self.login_args('createdb', create_args)
             try:
-                self.create_db(self.db_name, de_template=self.db_template)
+                self.create_db()
             except AssertionError:
                 raise SystemExit(
                     "Could not create database %r from template %r" %
                     (self.db_name, self.db_template))
         else:
-            self.create_db_from_schema(self.db_name)
-
-    def create_db(self, db_name, db_template=None):
-        create_args = []
-        if db_template is not None:
-            create_args.extend(['-T', self.db_template])
-        if self.encoding:
-            create_args.extend(['-E', self.encoding])
-        create_args.append(self.db_name)
-        assert 0 == subprocess.call(
-            self.login_args('createdb', create_args))
+            self.cmd_create = self.login_args('createdb', create_args)
+            self.create_db_from_schema()
 
     def create_template(self, create_args):
         schema_mtime = int(os.path.getmtime(self.schema_path))
@@ -187,11 +183,17 @@ class PostgreSQL(Database):
         if self._db_exists(self.db_template):
             template_mtime = self._get_db_mtime(self.db_template)
             if self.force_template or schema_mtime != template_mtime:
-                self.drop_db(self.db_template)
+                subprocess.call(self.login_args('dropdb', [self.db_template]))
             else:
                 return
 
-        self.create_db_from_schema(self.db_template)
+        db_result = subprocess.call(self.login_args(
+            'createdb', create_args + [self.db_template]))
+        if db_result != 0:
+            raise SystemExit(
+                'Could not create template database %s.' % self.db_template)
+        self.create_schema(db_name=self.db_template)
+        self.mark_testing(self.get_dsn(self.db_template))
         self._set_db_mtime(self.db_template, schema_mtime)
 
     def create_schema(self, db_name=None):
