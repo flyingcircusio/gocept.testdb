@@ -14,7 +14,6 @@ __all__ = ['MySQL', 'PostgreSQL']
 
 class Database(object):
 
-    db_template = None
     protocol = NotImplemented
     cmd_create = NotImplemented
 
@@ -40,9 +39,21 @@ class Database(object):
         return '%s://%s%s/%s' % (self.protocol, login, self.db_host, db_name)
 
     def create(self):
+        """Protocol entry point for setting up the database on the server.
+
+        Implementation may be optimised, for example for PostgreSQL to use
+        template databases.
+
+        """
+        self.create_db_from_schema()
+
+    def create_db_from_schema(self):
+        """Recipe for how to create a database from a schema.
+
+        Independent of the choice of database engine.
+
+        """
         self.create_db()
-        if self.db_template is not None:
-            return
         if self.schema_path:
             self.create_schema()
         self.mark_testing(self.dsn)
@@ -134,15 +145,9 @@ class PostgreSQL(Database):
     def __init__(self, encoding=None, db_template=None, force_template=False,
                  *args, **kw):
         super(PostgreSQL, self).__init__(*args, **kw)
+        self.encoding = encoding
         self.db_template = db_template
         self.force_template = force_template
-        create_args = [self.db_name]
-        if encoding:
-            create_args[0:0] = ['-E', encoding]
-        if db_template:
-            self.create_template(create_args[:-1])
-            create_args[0:0] = ['-T', db_template]
-        self.cmd_create = self.login_args('createdb', create_args)
 
     def login_args(self, command, extra_args=()):
         args = [
@@ -152,6 +157,19 @@ class PostgreSQL(Database):
             args.extend(['-U', self.db_user])
         args.extend(extra_args)
         return args
+
+    def create(self):
+        create_args = [self.db_name]
+        if self.encoding:
+            create_args[0:0] = ['-E', self.encoding]
+        if self.db_template:
+            self.create_template(create_args[:-1])
+            create_args[0:0] = ['-T', self.db_template]
+            self.cmd_create = self.login_args('createdb', create_args)
+            self.create_db()
+        else:
+            self.cmd_create = self.login_args('createdb', create_args)
+            self.create_db_from_schema()
 
     def create_template(self, create_args):
         schema_mtime = int(os.path.getmtime(self.schema_path))
