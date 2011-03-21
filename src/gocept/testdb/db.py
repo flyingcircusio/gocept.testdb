@@ -15,7 +15,6 @@ __all__ = ['MySQL', 'PostgreSQL']
 class Database(object):
 
     protocol = NotImplemented
-    cmd_create = NotImplemented
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
@@ -45,29 +44,34 @@ class Database(object):
         template databases.
 
         """
-        self.create_db_from_schema()
+        self.create_db_from_schema(self.db_name)
 
-    def create_db_from_schema(self):
+    def create_db_from_schema(self, db_name):
         """Recipe for how to create a database from a schema.
 
         Independent of the choice of database engine.
 
         """
         try:
-            self.create_db()
+            self.create_db(db_name)
         except AssertionError:
-            raise SystemExit("Could not create database %r" % self.db_name)
+            raise SystemExit("Could not create database %r" % db_name)
         if self.schema_path:
             try:
-                self.create_schema(self.db_name)
+                self.create_schema(db_name)
             except AssertionError:
                 raise RuntimeError(
-                    "Could not initialize schema in database %r." %
-                    self.db_name)
-        self.mark_testing(self.db_name)
+                    "Could not initialize schema in database %r." % db_name)
+        self.mark_testing(db_name)
 
-    def create_db(self):
-        assert 0 == subprocess.call(self.cmd_create)
+    def create_db(self, db_name):
+        """Implementation of creating an empty database on the server.
+
+        Depends on the choice of database engine. Raises AssertionError if the
+        database couldn't be created.
+
+        """
+        raise NotImplementedError()
 
     def create_schema(self, db_name):
         """Implementation of how to load a schema into an existing database.
@@ -118,11 +122,6 @@ class MySQL(Database):
 
     protocol = 'mysql'
 
-    def __init__(self, *args, **kw):
-        super(MySQL, self).__init__(*args, **kw)
-        self.cmd_create = self.login_args(
-                'mysqladmin', ['create', self.db_name])
-
     def login_args(self, command, extra_args=()):
         args = [
             command,
@@ -133,6 +132,10 @@ class MySQL(Database):
             args.extend(['-p' + self.db_pass])
         args.extend(extra_args)
         return args
+
+    def create_db(self, db_name):
+        assert 0 == subprocess.call(
+            self.login_args('mysqladmin', ['create', db_name]))
 
     def create_schema(self, db_name):
         assert 0 == subprocess.call(
@@ -164,24 +167,18 @@ class PostgreSQL(Database):
         return args
 
     def create(self):
-        create_args = [self.db_name]
-        if self.encoding:
-            create_args[0:0] = ['-E', self.encoding]
         if self.db_template:
-            self.create_template(create_args[:-1])
-            create_args[0:0] = ['-T', self.db_template]
-            self.cmd_create = self.login_args('createdb', create_args)
+            self.create_template()
             try:
-                self.create_db()
+                self.create_db(self.db_name, db_template=self.db_template)
             except AssertionError:
                 raise SystemExit(
                     "Could not create database %r from template %r" %
                     (self.db_name, self.db_template))
         else:
-            self.cmd_create = self.login_args('createdb', create_args)
-            self.create_db_from_schema()
+            self.create_db_from_schema(self.db_name)
 
-    def create_template(self, create_args):
+    def create_template(self):
         schema_mtime = int(os.path.getmtime(self.schema_path))
 
         if self._db_exists(self.db_template):
@@ -191,14 +188,17 @@ class PostgreSQL(Database):
             else:
                 return
 
-        db_result = subprocess.call(self.login_args(
-            'createdb', create_args + [self.db_template]))
-        if db_result != 0:
-            raise SystemExit(
-                'Could not create template database %s.' % self.db_template)
-        self.create_schema(db_name=self.db_template)
-        self.mark_testing(self.db_template)
+        self.create_db_from_schema(self.db_template)
         self._set_db_mtime(self.db_template, schema_mtime)
+
+    def create_db(self, db_name, db_template=None):
+        create_args = []
+        if db_template is not None:
+            create_args.extend(['-T', self.db_template])
+        if self.encoding:
+            create_args.extend(['-E', self.encoding])
+        assert 0 == subprocess.call(
+            self.login_args('createdb', create_args + [db_name]))
 
     def create_schema(self, db_name):
         assert 0 == subprocess.call(
