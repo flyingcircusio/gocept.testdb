@@ -53,15 +53,16 @@ class Database(object):
         Independent of the choice of database engine.
 
         """
-        self.create_db()
+        try:
+            self.create_db()
+        except AssertionError:
+            raise SystemExit("Could not create database %r" % self.db_name)
         if self.schema_path:
             self.create_schema()
         self.mark_testing(self.dsn)
 
     def create_db(self):
-        db_result = subprocess.call(self.cmd_create)
-        if db_result != 0:
-            raise SystemExit("Could not create database %r" % self.db_name)
+        assert 0 == subprocess.call(self.cmd_create)
 
     def create_schema(self):
         raise NotImplementedError()
@@ -166,7 +167,12 @@ class PostgreSQL(Database):
             self.create_template(create_args[:-1])
             create_args[0:0] = ['-T', self.db_template]
             self.cmd_create = self.login_args('createdb', create_args)
-            self.create_db()
+            try:
+                self.create_db()
+            except AssertionError:
+                raise SystemExit(
+                    "Could not create database %r from template %r" %
+                    (self.db_name, self.db_template))
         else:
             self.cmd_create = self.login_args('createdb', create_args)
             self.create_db_from_schema()
