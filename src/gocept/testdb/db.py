@@ -181,7 +181,7 @@ class PostgreSQL(Database):
     def create_template(self):
         schema_mtime = int(os.path.getmtime(self.schema_path))
 
-        if self._db_exists(self.db_template):
+        if self.db_template in self.list_db_names():
             template_mtime = self._get_db_mtime(self.db_template)
             if self.force_template or schema_mtime != template_mtime:
                 self.drop_db(self.db_template)
@@ -207,14 +207,13 @@ class PostgreSQL(Database):
                          '-v', 'ON_ERROR_STOP=true', '--quiet',
                          db_name]))
 
-    def _db_exists(self, database):
-        dbs, _ = subprocess.Popen(self.login_args('psql', ['-l']),
-                               stdout=subprocess.PIPE).communicate()
-        for line in dbs.splitlines():
-            if line.split('|')[0].strip() == database:
-                return True
-        else:
-            return False
+    def list_db_names(self):
+        # Use unaligned output to simplify splitting.
+        raw_list, _ = subprocess.Popen(self.login_args('psql', ['-l', '-A']),
+                                       stdout=subprocess.PIPE).communicate()
+        return [line.split('|')[0]
+                for line in raw_list.splitlines()[2:-1]
+                if '|' in line]  # Options may appear on lines of their own.
 
     def _get_db_mtime(self, database):
         dsn = self.get_dsn(database)
