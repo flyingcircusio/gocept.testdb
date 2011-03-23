@@ -18,6 +18,7 @@ class Database(object):
 
     def __init__(self, schema_path=None, prefix='testdb', db_name=None):
         self.schema_path = schema_path
+        self.prefix = prefix
         if db_name:
             self.db_name = db_name
         else:
@@ -92,6 +93,14 @@ class Database(object):
         table.create()
         engine.dispose()
 
+    def list_db_names(self):
+        """Returns a list names of all databases that exist on the server.
+
+        Implementation depends on choice of database engine.
+
+        """
+        raise NotImplementedError
+
     def drop(self):
         """Protocol entry point for tearing down the database on the server.
 
@@ -108,6 +117,17 @@ class Database(object):
             except AssertionError:
                 raise RuntimeError("Could not drop database %r" % self.db_name)
 
+    def drop_all(self):
+        """Protocol entry point for dropping all test dbs on the server.
+
+        May need to be overridden in a given Database implementation, for
+        example to deal with PostgreSQL's template databases.
+
+        """
+        for name in self.list_db_names():
+            if self._matches_db_naming_scheme(name):
+                self.drop_db(name)
+
     def drop_db(self, db_name):
         """Implementation of dropping a database on the server.
 
@@ -116,6 +136,21 @@ class Database(object):
 
         """
         raise NotImplementedError
+
+    def _matches_db_naming_scheme(self, name):
+        """Check whether name fits the db naming scheme applied by __init__.
+
+        """
+        pieces = name.split('-')
+        if len(pieces) != 2:
+            return False
+        if pieces[0] != self.prefix:
+            return False
+        try:
+            int(pieces[1])
+        except ValueError:
+            return False
+        return True
 
 
 class MySQL(Database):
@@ -140,6 +175,11 @@ class MySQL(Database):
     def create_schema(self, db_name):
         assert 0 == subprocess.call(
             self.login_args('mysql', [db_name]), stdin=open(self.schema_path))
+
+    def list_db_names(self):
+        raw_list, _ = subprocess.Popen(self.login_args('mysqlshow'),
+                                       stdout=subprocess.PIPE).communicate()
+        return [line.split()[1] for line in raw_list.splitlines()[3:-1]]
 
     def drop_db(self, db_name):
         assert 0 == subprocess.call(
@@ -238,6 +278,12 @@ class PostgreSQL(Database):
                      mtime)
         conn.invalidate()
         conn.close()
+
+    def drop_all(self, drop_template=False):
+        for name in self.list_db_names():
+            if (name == self.db_template and drop_template or
+                self._matches_db_naming_scheme(name)):
+                self.drop_db(name)
 
     def drop_db(self, db_name):
         assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))

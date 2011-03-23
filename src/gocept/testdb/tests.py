@@ -51,19 +51,11 @@ class PostgreSQLRegressionTests(unittest.TestCase):
 
     db_template = 'gocept.testdb.tests-template'
 
-    def setUp(self):
-        db = gocept.testdb.db.PostgreSQL()
-        try:
-            db.drop_db(self.db_template)
-        except AssertionError:
-            pass
+    def drop_all(self):
+        db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)
+        db.drop_all(drop_template=True)
 
-    def tearDown(self):
-        db = gocept.testdb.db.PostgreSQL()
-        try:
-            db.drop_db(self.db_template)
-        except AssertionError:
-            pass
+    setUp = tearDown = drop_all
 
     def test_template_db_doesnt_need_schema(self):
         db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)
