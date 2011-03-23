@@ -186,9 +186,20 @@ file is newer than the existing template db:
 >>> table_names(db4.dsn)
 [u'bar', u'tmp_functest']
 
+If, however, the template db cannot be set up properly, it is removed
+altogether to avoid a broken template db interfering with subsequent tests:
+
+>>> write(schema+'-broken', 'foobar')
+>>> db_broken = gocept.testdb.PostgreSQL(
+...     schema_path=schema+'-broken', db_template='templatetest')
+>>> db_broken.create()
+Traceback (most recent call last):
+SystemExit: Could not initialize schema in database 'templatetest'.
+>>> 'templatetest' in db_broken.list_db_names()
+False
+
 Clean up:
 
->>> db.drop_db('templatetest')
 >>> db.drop()
 >>> db2.drop()
 >>> db3.drop()
