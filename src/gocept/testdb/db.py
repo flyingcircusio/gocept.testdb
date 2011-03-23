@@ -61,7 +61,7 @@ class Database(object):
             try:
                 self.create_schema(db_name)
             except AssertionError:
-                raise RuntimeError(
+                raise SystemExit(
                     "Could not initialize schema in database %r." % db_name)
         self.mark_testing(db_name)
 
@@ -208,7 +208,14 @@ class PostgreSQL(Database):
 
     def create(self):
         if self.db_template:
-            self.create_template()
+            try:
+                self.create_template()
+            except SystemExit, e:
+                try:
+                    self.drop_db(self.db_template)
+                except:
+                    pass
+                raise e
             try:
                 self.create_db(self.db_name, db_template=self.db_template)
             except AssertionError:
