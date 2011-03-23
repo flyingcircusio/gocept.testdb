@@ -2,6 +2,7 @@
 # See also LICENSE.txt
 
 import doctest
+import gocept.testdb.db
 import shutil
 import sqlalchemy
 import tempfile
@@ -46,8 +47,32 @@ def tearDown(test):
     shutil.rmtree(test.sql_dir)
 
 
+class PostgreSQLRegressionTests(unittest.TestCase):
+
+    db_template = 'gocept.testdb.tests-template'
+
+    def setUp(self):
+        db = gocept.testdb.db.PostgreSQL()
+        try:
+            db.drop_db(self.db_template)
+        except AssertionError:
+            pass
+
+    def tearDown(self):
+        db = gocept.testdb.db.PostgreSQL()
+        try:
+            db.drop_db(self.db_template)
+        except AssertionError:
+            pass
+
+    def test_template_db_doesnt_need_schema(self):
+        db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)
+        db.create()
+
+
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(PostgreSQLRegressionTests))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
         optionflags=doctest.ELLIPSIS

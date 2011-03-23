@@ -179,7 +179,10 @@ class PostgreSQL(Database):
             self.create_db_from_schema(self.db_name)
 
     def create_template(self):
-        schema_mtime = int(os.path.getmtime(self.schema_path))
+        if self.schema_path is None:
+            schema_mtime = 0
+        else:
+            schema_mtime = int(os.path.getmtime(self.schema_path))
 
         if self.db_template in self.list_db_names():
             template_mtime = self._get_db_mtime(self.db_template)
