@@ -57,6 +57,27 @@ You can specify the name of the database:
 >>> db.dsn
 'mysql://localhost/mytestdb'
 
+There's a method to drop all test databases that may have been left on the
+server by previous test runs by removing all (but only those) databases whose
+name matches the test database naming scheme of ``gocept.testdb`` and using
+the same name prefix as the Database instance used for dropping them all:
+
+>>> db = gocept.testdb.MySQL()
+>>> db.drop_all()  # create a well-defined server state wrt the default prefix
+>>> db_count_0 = len(db.list_db_names())
+>>> gocept.testdb.MySQL().create()
+>>> gocept.testdb.MySQL().create()
+>>> db.create_db('gocept.testdb.tests-foo')
+>>> db.create_db('gocept.testdb.tests-bar')
+>>> len(db.list_db_names()) - db_count_0
+4
+>>> db.drop_all()
+>>> len(db.list_db_names()) - db_count_0
+2
+>>> db.drop_db('gocept.testdb.tests-foo')
+>>> db.drop_db('gocept.testdb.tests-bar')
+>>> len(db.list_db_names()) - db_count_0
+0
 
 PostgreSQL
 ----------
@@ -186,3 +207,41 @@ for MySQL the same way.)
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema, prefix='my-tests')
 >>> db.dsn
 'postgresql://localhost/my-tests-...
+
+Cleaning up the server
+----------------------
+
+There's a method to drop all test databases that may have been left on the
+server by previous test runs by removing all (but only those) databases whose
+name matches the test database naming scheme of ``gocept.testdb`` and using
+the same name prefix as the Database instance used for dropping them all. For
+PostgreSQL, this clean-up method doesn't by default drop the template database
+if one was created:
+
+>>> db = gocept.testdb.PostgreSQL(db_template='templatetest')
+>>> db.drop_all()  # create a well-defined server state wrt the default prefix
+>>> db_count_0 = len(db.list_db_names())
+>>> db.create()
+>>> gocept.testdb.PostgreSQL().create()
+>>> db.create_db('gocept.testdb.tests-foo')
+>>> db.create_db('gocept.testdb.tests-bar')
+>>> len(db.list_db_names()) - db_count_0
+5
+>>> db.drop_all()
+>>> len(db.list_db_names()) - db_count_0
+3
+>>> db.drop_db('gocept.testdb.tests-foo')
+>>> db.drop_db('gocept.testdb.tests-bar')
+>>> len(db.list_db_names()) - db_count_0
+1
+
+However, the clean-up method can be instructed to drop the template database
+as well:
+
+>>> db.db_template in db.list_db_names()
+True
+>>> db.drop_all(drop_template=True)
+>>> db.db_template in db.list_db_names()
+False
+>>> len(db.list_db_names()) - db_count_0
+0

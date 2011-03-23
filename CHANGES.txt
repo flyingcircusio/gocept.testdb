@@ -12,6 +12,10 @@ Changes
   moment db.create() is called explicitly. This is also more symmetric with
   respect to db.drop().
 
+- Added functionality for dropping all databases matching the testdb naming
+  scheme which may have been left on the server by earlier test runs.
+  Optionally also drops the template db.
+
 - Added option to specify the name of the database for MySQL and PostgreSQL.
 
 - Added an option to specify a template database for PostgreSQL. If it does
