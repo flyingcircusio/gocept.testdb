@@ -256,3 +256,51 @@ True
 False
 >>> len(db.list_db_names()) - db_count_0
 0
+
+
+The ``drop-all`` sommand-line script
+------------------------------------
+
+The Database classes' ``drop_all`` functionality is available independently
+through a command-line script named ``drop-all``. The script drops any test
+databases from both the PostgreSQL and MySQL servers that match the
+test-database naming convention with any of the prefixes passed as
+command-line arguments (clean up first):
+
+>>> import gocept.testdb.cmdline
+>>> gocept.testdb.cmdline.drop_all(
+...     ['gocept.testdb.tests-foo', 'gocept.testdb.tests-bar'])
+>>> count_mysql = len(gocept.testdb.db.MySQL().list_db_names())
+>>> count_psql = len(gocept.testdb.db.PostgreSQL().list_db_names())
+
+>>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-foo').create()
+>>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-bar').create()
+>>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-bar').create()
+>>> len(gocept.testdb.db.MySQL().list_db_names()) - count_mysql
+3
+
+>>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-foo').create()
+>>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-bar').create()
+>>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-bar').create()
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+3
+
+>>> system('drop-all gocept.testdb.tests-foo gocept.testdb.tests-bar')
+>>> len(gocept.testdb.db.MySQL().list_db_names()) - count_mysql
+0
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+0
+
+On the PostgreSQL server, databases named exactly after any of the names
+passed will also be dropped. This is how template databases can be dropped
+without having to call ``dropdb`` on each of them:
+
+
+If the script is called without arguments, test databases matching the default
+prefix will be dropped, but no attempt will be made to drop a database named
+exactly after the default prefix since in this case, there's no reason to
+assume that a template database by that name should have been created:
+
+(We considered an explicit command-line switch for dropping template databases
+but felt that it would be too annoying and test databases shouldn't use a
+prefix that is itself used by a real or template database.)
