@@ -295,11 +295,30 @@ On the PostgreSQL server, databases named exactly after any of the names
 passed will also be dropped. This is how template databases can be dropped
 without having to call ``dropdb`` on each of them:
 
+>>> gocept.testdb.db.PostgreSQL(
+...     prefix='gocept.testdb.tests-foo',
+...     db_template='gocept.testdb.tests-bar').create()
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+2
+>>> gocept.testdb.cmdline.drop_all(
+...     ['gocept.testdb.tests-foo', 'gocept.testdb.tests-bar'])
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+0
 
 If the script is called without arguments, test databases matching the default
 prefix will be dropped, but no attempt will be made to drop a database named
 exactly after the default prefix since in this case, there's no reason to
 assume that a template database by that name should have been created:
+
+>>> gocept.testdb.db.PostgreSQL(db_template='testdb').create()
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+2
+>>> gocept.testdb.cmdline.drop_all([])
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+1
+>>> gocept.testdb.db.PostgreSQL(db_template='testdb').drop_db('testdb')
+>>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
+0
 
 (We considered an explicit command-line switch for dropping template databases
 but felt that it would be too annoying and test databases shouldn't use a
