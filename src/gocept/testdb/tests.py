@@ -3,8 +3,13 @@
 
 import doctest
 import gocept.testdb.db
+import os
+import os.path
 import shutil
 import sqlalchemy
+import stat
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -33,18 +38,38 @@ def table_names(dsn):
     return result
 
 
+def system(test):
+    def system(cmdline):
+        args = cmdline.split()
+        args[0] = os.path.join(test.bin_dir, args[0])
+        subprocess.call(args)
+    return system
+
+
 def setUp(test):
+    test.bin_dir = tempfile.mkdtemp()
+    drop_all_path = os.path.join(test.bin_dir, 'drop-all')
+    write(drop_all_path, """\
+#!%s
+import sys
+sys.path = %r
+import gocept.testdb.cmdline
+gocept.testdb.cmdline.drop_all_entry_point()
+""" % (sys.executable, sys.path))
+    os.chmod(drop_all_path, os.stat(drop_all_path).st_mode | stat.S_IXUSR)
     test.sql_dir = tempfile.mkdtemp()
     test.globs.update(
         sql_dir=test.sql_dir,
         write=write,
         execute=execute,
         table_names=table_names,
+        system=system(test),
         )
 
 
 def tearDown(test):
     shutil.rmtree(test.sql_dir)
+    shutil.rmtree(test.bin_dir)
 
 
 class PostgreSQLRegressionTests(unittest.TestCase):

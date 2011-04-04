@@ -38,4 +38,8 @@ setup(
             'MySQL-python',
             'psycopg2',
             ]),
+    entry_points="""\
+    [console_scripts]
+    drop-all = gocept.testdb.cmdline:drop_all_entry_point
+    """,
 )
