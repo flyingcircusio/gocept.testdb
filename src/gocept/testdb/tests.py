@@ -61,6 +61,10 @@ class PostgreSQLRegressionTests(unittest.TestCase):
         db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)
         db.create()
 
+    def test_naming_scheme_matches_with_dash_in_prefix(self):
+        db = gocept.testdb.db.PostgreSQL(prefix='foo-bar')
+        self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -141,7 +141,7 @@ class Database(object):
         """Check whether name fits the db naming scheme applied by __init__.
 
         """
-        pieces = name.split('-')
+        pieces = name.rsplit('-', 1)
         if len(pieces) != 2:
             return False
         if pieces[0] != self.prefix:
