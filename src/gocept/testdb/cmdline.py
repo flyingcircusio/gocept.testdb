@@ -5,15 +5,35 @@ import gocept.testdb.db
 import sys
 
 
+def drop_mysql(name=None):
+    try:
+        if name is None:
+            gocept.testdb.db.MySQL().drop_all()
+        else:
+            gocept.testdb.db.MySQL(prefix=name).drop_all()
+    except ImportError:
+        pass
+
+
+def drop_postgresql(name=None):
+    try:
+        if name is None:
+            gocept.testdb.db.PostgreSQL().drop_all()
+        else:
+            gocept.testdb.db.PostgreSQL(
+                prefix=name, db_template=name).drop_all(drop_template=True)
+    except ImportError:
+        pass
+
+
 def drop_all(names):
     if names:
         for name in names:
-            gocept.testdb.db.MySQL(prefix=name).drop_all()
-            gocept.testdb.db.PostgreSQL(
-                prefix=name, db_template=name).drop_all(drop_template=True)
+            drop_mysql(name)
+            drop_postgresql(name)
     else:
-        gocept.testdb.db.MySQL().drop_all()
-        gocept.testdb.db.PostgreSQL().drop_all()
+        drop_mysql()
+        drop_postgresql()
 
 
 def drop_all_entry_point():
