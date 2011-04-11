@@ -258,7 +258,7 @@ False
 0
 
 
-The ``drop-all`` sommand-line script
+The ``drop-all`` command-line script
 ------------------------------------
 
 The Database classes' ``drop_all`` functionality is available independently
