@@ -91,9 +91,32 @@ class PostgreSQLRegressionTests(unittest.TestCase):
         self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
 
 
+class TestModeTests(unittest.TestCase):
+
+    def setUp(self):
+        self.db = gocept.testdb.db.MySQL()
+
+    def tearDown(self):
+        self.db.drop_all
+
+    def test_nonexistent_db_counts_as_not_testing(self):
+        self.assertFalse(self.db.is_testing)
+
+    def test_db_with_special_table_counts_as_testing(self):
+        self.db.create()
+        self.assertTrue(self.db.is_testing)
+
+    def test_db_without_special_table_counts_as_not_testing(self):
+        self.db.create()
+        engine = sqlalchemy.create_engine(self.db.dsn)
+        engine.connect().execute('DROP TABLE tmp_functest')
+        self.assertFalse(self.db.is_testing)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PostgreSQLRegressionTests))
+    suite.addTest(unittest.makeSuite(TestModeTests))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
         optionflags=doctest.ELLIPSIS
