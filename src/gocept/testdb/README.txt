@@ -38,6 +38,12 @@ The database is marked as a testing database by creating a table called
 >>> conn = engine.connect()
 >>> ignore = conn.execute('SELECT * from tmp_functest')
 
+We also offer a convenience method for determining the testing status of the
+database:
+
+>>> db.is_testing
+True
+
 If you passed a schema_path to the constructor, the SQL code in this file
 is executed, e. g. to set up tables:
 

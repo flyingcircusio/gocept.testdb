@@ -5,7 +5,7 @@ Changes
 1.0 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added `is_testing` property as a convenience API.
 
 
 1.0b1 (2011-04-12)
