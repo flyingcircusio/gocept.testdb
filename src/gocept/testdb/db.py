@@ -105,6 +105,18 @@ class Database(object):
         finally:
             engine.dispose()
 
+    @property
+    def exists(self):
+        engine = sqlalchemy.create_engine(self.get_dsn(self.db_name))
+        try:
+            try:
+                engine.connect()
+                return True
+            except:
+                return False
+        finally:
+            engine.dispose()
+
     def list_db_names(self):
         """Returns a list names of all databases that exist on the server.
 

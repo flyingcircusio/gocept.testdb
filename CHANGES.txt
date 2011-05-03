@@ -6,6 +6,7 @@ Changes
 ----------------
 
 - Added `is_testing` property as a convenience API.
+- Added `exists` property as a convenience API.
 
 
 1.0b1 (2011-04-12)
