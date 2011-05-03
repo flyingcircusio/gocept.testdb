@@ -97,10 +97,13 @@ class Database(object):
     def is_testing(self):
         engine = sqlalchemy.create_engine(self.get_dsn(self.db_name))
         try:
-            engine.connect().execute('SELECT * from tmp_functest')
-            return True
-        except:
-            return False
+            try:
+                engine.connect().execute('SELECT * from tmp_functest')
+                return True
+            except:
+                return False
+        finally:
+            engine.dispose()
 
     def list_db_names(self):
         """Returns a list names of all databases that exist on the server.
