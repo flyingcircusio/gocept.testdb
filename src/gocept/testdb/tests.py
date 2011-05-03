@@ -91,13 +91,20 @@ class PostgreSQLRegressionTests(unittest.TestCase):
         self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
 
 
-class TestModeTests(unittest.TestCase):
+class StatusTests(unittest.TestCase):
 
     def setUp(self):
         self.db = gocept.testdb.db.MySQL()
 
     def tearDown(self):
         self.db.drop_all
+
+    def test_nonexistent_db_returns_exists_False(self):
+        self.assertFalse(self.db.exists)
+
+    def test_existing_db_returns_exists_True(self):
+        self.db.create()
+        self.assertTrue(self.db.exists)
 
     def test_nonexistent_db_counts_as_not_testing(self):
         self.assertFalse(self.db.is_testing)
@@ -116,7 +123,7 @@ class TestModeTests(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PostgreSQLRegressionTests))
-    suite.addTest(unittest.makeSuite(TestModeTests))
+    suite.addTest(unittest.makeSuite(StatusTests))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
         optionflags=doctest.ELLIPSIS

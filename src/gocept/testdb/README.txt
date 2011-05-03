@@ -38,9 +38,11 @@ The database is marked as a testing database by creating a table called
 >>> conn = engine.connect()
 >>> ignore = conn.execute('SELECT * from tmp_functest')
 
-We also offer a convenience method for determining the testing status of the
+The database also offers conveniences method for determining the status of the
 database:
 
+>>> db.exists
+True
 >>> db.is_testing
 True
 
