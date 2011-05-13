@@ -2,10 +2,10 @@
 Changes
 =======
 
-1.0 (unreleased)
-----------------
+1.0b3 (2011-05-13)
+------------------
 
-- Nothing changed yet.
+- Added `connect` convenience method.
 
 
 1.0b2 (2011-05-04)

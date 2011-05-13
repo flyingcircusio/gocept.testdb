@@ -83,6 +83,9 @@ class Database(object):
         """
         raise NotImplementedError()
 
+    def connect(self):
+        return sqlalchemy.create_engine(self.get_dsn(self.db_name))
+
     def mark_testing(self, db_name):
         engine = sqlalchemy.create_engine(self.get_dsn(db_name))
         meta = sqlalchemy.MetaData()
@@ -95,7 +98,7 @@ class Database(object):
 
     @property
     def is_testing(self):
-        engine = sqlalchemy.create_engine(self.get_dsn(self.db_name))
+        engine = self.connect()
         try:
             try:
                 engine.connect().execute('SELECT * from tmp_functest')
@@ -107,7 +110,7 @@ class Database(object):
 
     @property
     def exists(self):
-        engine = sqlalchemy.create_engine(self.get_dsn(self.db_name))
+        engine = self.connect()
         try:
             try:
                 engine.connect()
