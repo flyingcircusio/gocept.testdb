@@ -11,7 +11,7 @@ def drop_mysql(name=None):
             gocept.testdb.db.MySQL().drop_all()
         else:
             gocept.testdb.db.MySQL(prefix=name).drop_all()
-    except ImportError:
+    except OSError:
         pass
 
 
@@ -22,7 +22,7 @@ def drop_postgresql(name=None):
         else:
             gocept.testdb.db.PostgreSQL(
                 prefix=name, db_template=name).drop_all(drop_template=True)
-    except ImportError:
+    except OSError:
         pass
 
 
