@@ -2,7 +2,6 @@
 # See also LICENSE.txt
 
 import os
-import random
 import subprocess
 import time
 
@@ -22,7 +21,7 @@ class Database(object):
         if db_name:
             self.db_name = db_name
         else:
-            self.db_name = '%s-%i' % (prefix, random.randint(0, 9999))
+            self.db_name = '%s-%f' % (prefix, time.time())
         self.db_host = (os.environ.get('%s_HOST' % self.protocol.upper())
                        or 'localhost')
         self.db_user = os.environ.get('%s_USER' % self.protocol.upper())
@@ -174,7 +173,7 @@ class Database(object):
         if pieces[0] != self.prefix:
             return False
         try:
-            int(pieces[1])
+            float(pieces[1])
         except ValueError:
             return False
         return True
