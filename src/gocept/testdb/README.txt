@@ -1,7 +1,3 @@
-===========================
-Temporary database creation
-===========================
-
 gocept.testdb provides small helper classes that create and drop temporary
 databases.
 
@@ -13,7 +9,7 @@ databases.
 
 
 MySQL
------
+=====
 
 First, instantiate a test database object and have it create the database on
 the server:
@@ -88,10 +84,10 @@ the same name prefix as the Database instance used for dropping them all:
 0
 
 PostgreSQL
-----------
+==========
 
 General
-~~~~~~~
+-------
 
 The same procedure also works for PostgreSQL:
 (Note however that POSTGRES_PASS is not supported at the moment)
@@ -110,7 +106,7 @@ Traceback (most recent call last):
 OperationalError:...
 
 Encoding
-~~~~~~~~
+--------
 
 For Postgres an optional encoding parameter can be specified in the
 constructor. It is used when creating the database.
@@ -129,7 +125,7 @@ True
 >>> db.drop()
 
 DB name
-~~~~~~~~
+--------
 
 You can specify the name of the database:
 
@@ -138,7 +134,7 @@ You can specify the name of the database:
 'postgresql://localhost/mytestdb'
 
 Templates
-~~~~~~~~~
+---------
 
 For Postgres, an optional template parameter can be passed to the constructor.
 It specifies the name of a template db which is used for the creation of the
@@ -214,7 +210,7 @@ Clean up:
 >>> db4.drop()
 
 Database prefix
----------------
+===============
 
 By default the created database is prefixed with ``testdb`` but this can be
 changed by using the ``prefix`` attribute of the constructor: (This works
@@ -228,7 +224,7 @@ for MySQL the same way.)
 'postgresql://localhost/my-tests-...
 
 Cleaning up the server
-----------------------
+======================
 
 There's a method to drop all test databases that may have been left on the
 server by previous test runs by removing all (but only those) databases whose
@@ -267,7 +263,7 @@ False
 
 
 The ``drop-all`` command-line script
-------------------------------------
+====================================
 
 The Database classes' ``drop_all`` functionality is available independently
 through a command-line script named ``drop-all``. The script drops any test
