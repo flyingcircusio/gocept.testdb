@@ -90,7 +90,11 @@ General
 -------
 
 The same procedure also works for PostgreSQL:
-(Note however that POSTGRES_PASS is not supported at the moment)
+
+Note: Instead of using POSTGRES_PASS, use the ~/.pgpass mechanism
+`provided by postgres`_ itself.
+
+.. _`provided by postgres`: http://wiki.postgresql.org/wiki/Pgpass
 
 >>> db = gocept.testdb.PostgreSQL(schema_path=schema)
 >>> db.create()
