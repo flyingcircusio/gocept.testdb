@@ -183,9 +183,14 @@ class MySQL(Database):
 
     protocol = 'mysql'
 
+    def __init__(self, schema_path=None, prefix='testdb', db_name=None,
+                 cmd_postfix=''):
+        self.cmd_postfix = cmd_postfix
+        return super(MySQL, self).__init__(schema_path, prefix, db_name)
+
     def login_args(self, command, extra_args=()):
         args = [
-            command,
+            command + self.cmd_postfix,
             '-h', self.db_host]
         if self.db_user:
             args.extend(['-u', self.db_user])
