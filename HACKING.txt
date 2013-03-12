@@ -5,7 +5,6 @@ To run the `buildout` of this package copy ``local.cfg.example`` to
 ``local.cfg`` and edit it to match your needs.
 
 The source code is available in the subversion repository at
-https://code.gocept.com/svn/gocept/gocept.testdb
+https://bitbucket.org/gocept/gocept.testdb
 
-Please report any bugs you find at
-https://projects.gocept.com/projects/projects/gocept-testdb/issues
+Please report any bugs you find to <mail@gocept.com>.
