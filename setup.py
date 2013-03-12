@@ -10,7 +10,7 @@ def read(*path):
 
 setup(
     name='gocept.testdb',
-    version='1.0',
+    version='1.1.dev0',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
