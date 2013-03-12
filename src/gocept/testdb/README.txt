@@ -24,8 +24,8 @@ Login information can be specified via environment variables
 
 The dbapi DSN can then be used to connect to the database:
 
->>> db.dsn
-'mysql://localhost/testdb-...'
+>>> print db.dsn
+mysql://...localhost/testdb-...
 >>> engine = sqlalchemy.create_engine(db.dsn)
 
 The database is marked as a testing database by creating a table called
@@ -49,17 +49,22 @@ is executed, e. g. to set up tables:
 
 When done, simply drop the database:
 
+>>> conn.close()
 >>> db.drop()
->>> engine.connect().execute('SELECT * from tmp_functest')
-Traceback (most recent call last):
-  ...
-OperationalError:...
+>>> import sqlalchemy.exc
+>>> with engine.connect() as conn:
+...     try:
+...         conn.execute('SELECT * from tmp_functest')
+...     except sqlalchemy.exc.SQLAlchemyError:
+...         pass
+...     else:
+...         raise AssertionError()
 
 You can specify the name of the database:
 
 >>> db = gocept.testdb.MySQL(schema_path=schema, db_name='mytestdb')
->>> db.dsn
-'mysql://localhost/mytestdb'
+>>> print db.dsn
+mysql://...localhost/mytestdb
 
 There's a method to drop all test databases that may have been left on the
 server by previous test runs by removing all (but only those) databases whose
