@@ -282,6 +282,7 @@ class PostgreSQL(Database):
             create_args.extend(['-T', self.db_template])
         if self.lc_collate is not None:
             create_args.extend(['--lc-collate', self.lc_collate])
+            create_args.extend(['-T', 'template0'])
         if self.encoding:
             create_args.extend(['-E', self.encoding])
         assert 0 == subprocess.call(
