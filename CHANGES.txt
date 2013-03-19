@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.2 (unreleased)
-----------------
+1.1.1 (2013-03-19)
+------------------
 
 - Use `template0` when changing `LC_COLLATE` which was introduced in v1.1.
 
