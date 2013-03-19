@@ -221,11 +221,13 @@ class PostgreSQL(Database):
 
     protocol = 'postgresql'
 
-    def __init__(self, encoding=None, db_template=None, force_template=False,
+    def __init__(self, encoding=None, db_template=None,
+                 force_template=False, lc_collate=None,
                  *args, **kw):
         super(PostgreSQL, self).__init__(*args, **kw)
         self.encoding = encoding
         self.db_template = db_template
+        self.lc_collate = lc_collate
         self.force_template = force_template
 
     def login_args(self, command, extra_args=()):
@@ -248,7 +250,9 @@ class PostgreSQL(Database):
                     pass
                 raise e
             try:
-                self.create_db(self.db_name, db_template=self.db_template)
+                self.create_db(
+                    self.db_name,
+                    db_template=self.db_template)
             except AssertionError:
                 raise SystemExit(
                     "Could not create database %r from template %r" %
@@ -272,10 +276,12 @@ class PostgreSQL(Database):
         self.create_db_from_schema(self.db_template)
         self._set_db_mtime(self.db_template, schema_mtime)
 
-    def create_db(self, db_name, db_template=None):
+    def create_db(self, db_name, db_template=None, lc_collate=None):
         create_args = []
         if db_template is not None:
             create_args.extend(['-T', self.db_template])
+        if self.lc_collate is not None:
+            create_args.extend(['--lc-collate', self.lc_collate])
         if self.encoding:
             create_args.extend(['-E', self.encoding])
         assert 0 == subprocess.call(
