@@ -37,6 +37,7 @@ setup(
             'zope.testing',
             'MySQL-python',
             'psycopg2',
+            'mock',
             ]),
     entry_points="""\
     [console_scripts]

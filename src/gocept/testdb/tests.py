@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import mock
 
 
 def write(path, content):
@@ -89,6 +90,16 @@ class PostgreSQLRegressionTests(unittest.TestCase):
     def test_naming_scheme_matches_with_dash_in_prefix(self):
         db = gocept.testdb.db.PostgreSQL(prefix='foo-bar')
         self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
+
+    def test_can_add_database_with_special_lc_collate(self):
+        db = gocept.testdb.db.PostgreSQL(lc_collate='de_DE.UTF-8')
+        db.create()
+        db_data, _ = subprocess.Popen(
+            db.login_args('psql') + [db.db_name, '-l'],
+            stdout=subprocess.PIPE).communicate()
+        db_line = db_data.splitlines()[-3].split('|')
+        self.assertEqual(db.db_name, db_line[0].strip())
+        self.assertEqual('de_DE.UTF-8', db_line[3].strip())
 
 
 class StatusTests(unittest.TestCase):
