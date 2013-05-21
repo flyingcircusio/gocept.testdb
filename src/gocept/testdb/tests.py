@@ -73,7 +73,7 @@ def tearDown(test):
     shutil.rmtree(test.bin_dir)
 
 
-class PostgreSQLRegressionTests(unittest.TestCase):
+class PostgreSQL(unittest.TestCase):
 
     db_template = 'gocept.testdb.tests-template'
 
@@ -83,6 +83,9 @@ class PostgreSQLRegressionTests(unittest.TestCase):
 
     setUp = tearDown = drop_all
 
+
+class PostgreSQLRegressionTests(PostgreSQL):
+
     def test_template_db_doesnt_need_schema(self):
         db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)
         db.create()
@@ -90,6 +93,9 @@ class PostgreSQLRegressionTests(unittest.TestCase):
     def test_naming_scheme_matches_with_dash_in_prefix(self):
         db = gocept.testdb.db.PostgreSQL(prefix='foo-bar')
         self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
+
+
+class PostgreSQLTests(PostgreSQL):
 
     def test_can_add_database_with_special_lc_collate(self):
         db = gocept.testdb.db.PostgreSQL(lc_collate='de_DE.UTF-8')
@@ -130,6 +136,7 @@ class StatusTests(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PostgreSQLRegressionTests))
+    suite.addTest(unittest.makeSuite(PostgreSQLTests))
     suite.addTest(unittest.makeSuite(StatusTests))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
