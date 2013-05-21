@@ -4,7 +4,8 @@ Changelog
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed test code that made implicit assumptions about existing databases on
+  the PostgreSQL server used.
 
 
 1.1.1 (2013-03-19)

@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2011 gocept gmbh & co. kg
+# Copyright (c) 2008-2013 gocept gmbh & co. kg
 # See also LICENSE.txt
 
 import os
@@ -120,7 +120,7 @@ class Database(object):
             engine.dispose()
 
     def list_db_names(self):
-        """Returns a list names of all databases that exist on the server.
+        """Returns a list of names of all databases that exist on the server.
 
         Implementation depends on choice of database engine.
 
@@ -295,13 +295,16 @@ class PostgreSQL(Database):
                          '-v', 'ON_ERROR_STOP=true', '--quiet',
                          db_name]))
 
-    def list_db_names(self):
+    def pg_list_db_items(self):
         # Use unaligned output to simplify splitting.
         raw_list, _ = subprocess.Popen(self.login_args('psql', ['-l', '-A']),
                                        stdout=subprocess.PIPE).communicate()
-        return [line.split('|')[0]
+        return [line.split('|')
                 for line in raw_list.splitlines()[2:-1]
-                if '|' in line]  # Options may appear on lines of their own.
+                if '|' in line]  # XXX Throw away multi-line continuations.
+
+    def list_db_names(self):
+        return [items[0] for items in self.pg_list_db_items()]
 
     def _get_db_mtime(self, database):
         dsn = self.get_dsn(database)

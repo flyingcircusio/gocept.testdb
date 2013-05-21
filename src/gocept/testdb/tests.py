@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2011 gocept gmbh & co. kg
+# Copyright (c) 2008-2013 gocept gmbh & co. kg
 # See also LICENSE.txt
 
 import doctest
@@ -94,12 +94,8 @@ class PostgreSQLRegressionTests(unittest.TestCase):
     def test_can_add_database_with_special_lc_collate(self):
         db = gocept.testdb.db.PostgreSQL(lc_collate='de_DE.UTF-8')
         db.create()
-        db_data, _ = subprocess.Popen(
-            db.login_args('psql') + [db.db_name, '-l'],
-            stdout=subprocess.PIPE).communicate()
-        db_line = db_data.splitlines()[-3].split('|')
-        self.assertEqual(db.db_name, db_line[0].strip())
-        self.assertEqual('de_DE.UTF-8', db_line[3].strip())
+        collate_by_db_name = dict((x[0], x[3]) for x in db.pg_list_db_items())
+        self.assertEqual('de_DE.UTF-8', collate_by_db_name[db.db_name])
 
 
 class StatusTests(unittest.TestCase):
