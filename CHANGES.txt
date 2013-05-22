@@ -5,7 +5,7 @@ Changelog
 ----------------
 
 - Fixed test code that made implicit assumptions about existing databases on
-  the PostgreSQL server used.
+  the PostgreSQL server used or depended on timing conditions.
 
 
 1.1.1 (2013-03-19)
