@@ -190,9 +190,10 @@ and a template db according to the modified schema:
 The template db (and with it, the test db) ist also created anew if the schema
 file is newer than the existing template db:
 
+>>> import time; time.sleep(1)  # XXX hack; either fake db mtime or see #12431
 >>> write(schema, 'CREATE TABLE bar (dummy int);')
 >>> db4 = gocept.testdb.PostgreSQL(
-...     schema_path=schema, db_template='templatetest', force_template=True)
+...     schema_path=schema, db_template='templatetest', force_template=False)
 >>> db4.create()
 >>> table_names(db4.get_dsn('templatetest'))
 [u'bar', u'tmp_functest']
@@ -204,7 +205,8 @@ altogether to avoid a broken template db interfering with subsequent tests:
 
 >>> write(schema+'-broken', 'foobar')
 >>> db_broken = gocept.testdb.PostgreSQL(
-...     schema_path=schema+'-broken', db_template='templatetest')
+...     schema_path=schema+'-broken', db_template='templatetest',
+...     force_template=True)
 >>> db_broken.create()
 Traceback (most recent call last):
 SystemExit: Could not initialize schema in database 'templatetest'.
