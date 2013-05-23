@@ -186,7 +186,7 @@ class MySQL(Database):
 
     protocol = 'mysql'
 
-    def __init__(self, schema_path=None, prefix='testdb', db_name=None,
+    def __init__(self, schema_path=None, prefix=None, db_name=None,
                  cmd_postfix=''):
         self.cmd_postfix = cmd_postfix
         return super(MySQL, self).__init__(schema_path, prefix, db_name)
