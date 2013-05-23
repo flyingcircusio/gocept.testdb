@@ -15,13 +15,16 @@ class Database(object):
 
     protocol = NotImplemented
 
-    def __init__(self, schema_path=None, prefix='testdb', db_name=None):
+    prefix = 'testdb'
+
+    def __init__(self, schema_path=None, prefix=None, db_name=None):
         self.schema_path = schema_path
-        self.prefix = prefix
+        if prefix is not None:
+            self.prefix = prefix
         if db_name:
             self.db_name = db_name
         else:
-            self.db_name = '%s-%f' % (prefix, time.time())
+            self.db_name = '%s-%f' % (self.prefix, time.time())
         self.db_host = (os.environ.get('%s_HOST' % self.protocol.upper())
                        or 'localhost')
         self.db_user = os.environ.get('%s_USER' % self.protocol.upper())

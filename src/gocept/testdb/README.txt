@@ -7,6 +7,13 @@ databases.
 >>> schema = os.path.join(sql_dir, 'sample.sql')
 >>> write(schema, 'CREATE TABLE foo (dummy int);')
 
+We'll use a custom prefix specific to the current process whenever we create
+fixed-name databases during this test, in order to allow concurrent test runs
+on the same machine (such as a CI server):
+
+>>> import os
+>>> pid_prefix = 'gocept.testdb.tests-%s-' % os.getpid()
+>>> db_template = pid_prefix + 'templatetest'
 
 MySQL
 =====
@@ -76,15 +83,15 @@ the same name prefix as the Database instance used for dropping them all:
 >>> db_count_0 = len(db.list_db_names())
 >>> gocept.testdb.MySQL().create()
 >>> gocept.testdb.MySQL().create()
->>> db.create_db('gocept.testdb.tests-foo')
->>> db.create_db('gocept.testdb.tests-bar')
+>>> db.create_db(pid_prefix + 'foo')
+>>> db.create_db(pid_prefix + 'bar')
 >>> len(db.list_db_names()) - db_count_0
 4
 >>> db.drop_all()
 >>> len(db.list_db_names()) - db_count_0
 2
->>> db.drop_db('gocept.testdb.tests-foo')
->>> db.drop_db('gocept.testdb.tests-bar')
+>>> db.drop_db(pid_prefix + 'foo')
+>>> db.drop_db(pid_prefix + 'bar')
 >>> len(db.list_db_names()) - db_count_0
 0
 
@@ -155,9 +162,9 @@ template db is created (if it does not exist already) along with the requested
 db:
 
 >>> db = gocept.testdb.PostgreSQL(
-...     schema_path=schema, db_template='templatetest')
+...     schema_path=schema, db_template=db_template)
 >>> db.create()
->>> table_names(db.get_dsn('templatetest'))
+>>> table_names(db.get_dsn(db_template))
 [u'foo', u'tmp_functest']
 >>> table_names(db.dsn)
 [u'foo', u'tmp_functest']
@@ -166,11 +173,11 @@ Now with the template available, the schema is not used anymore to create the
 database (it's re-created from the template). Let's modify the template db
 before the next db creation run to demonstrate this:
 
->>> _ = execute(db.get_dsn('templatetest'), 'DROP TABLE foo;')
+>>> _ = execute(db.get_dsn(db_template), 'DROP TABLE foo;')
 >>> db2 = gocept.testdb.PostgreSQL(
-...     schema_path=schema, db_template='templatetest')
+...     schema_path=schema, db_template=db_template)
 >>> db2.create()
->>> table_names(db2.get_dsn('templatetest'))
+>>> table_names(db2.get_dsn(db_template))
 [u'tmp_functest']
 >>> table_names(db2.dsn)
 [u'tmp_functest']
@@ -180,9 +187,9 @@ created afresh from the schema. Doing so now will leave us with both a test db
 and a template db according to the modified schema:
 
 >>> db3 = gocept.testdb.PostgreSQL(
-...     schema_path=schema, db_template='templatetest', force_template=True)
+...     schema_path=schema, db_template=db_template, force_template=True)
 >>> db3.create()
->>> table_names(db3.get_dsn('templatetest'))
+>>> table_names(db3.get_dsn(db_template))
 [u'foo', u'tmp_functest']
 >>> table_names(db3.dsn)
 [u'foo', u'tmp_functest']
@@ -193,9 +200,9 @@ file is newer than the existing template db:
 >>> import time; time.sleep(1)  # XXX hack; either fake db mtime or see #12431
 >>> write(schema, 'CREATE TABLE bar (dummy int);')
 >>> db4 = gocept.testdb.PostgreSQL(
-...     schema_path=schema, db_template='templatetest', force_template=False)
+...     schema_path=schema, db_template=db_template, force_template=False)
 >>> db4.create()
->>> table_names(db4.get_dsn('templatetest'))
+>>> table_names(db4.get_dsn(db_template))
 [u'bar', u'tmp_functest']
 >>> table_names(db4.dsn)
 [u'bar', u'tmp_functest']
@@ -205,12 +212,13 @@ altogether to avoid a broken template db interfering with subsequent tests:
 
 >>> write(schema+'-broken', 'foobar')
 >>> db_broken = gocept.testdb.PostgreSQL(
-...     schema_path=schema+'-broken', db_template='templatetest',
+...     schema_path=schema+'-broken', db_template=db_template,
 ...     force_template=True)
 >>> db_broken.create()
 Traceback (most recent call last):
-SystemExit: Could not initialize schema in database 'templatetest'.
->>> 'templatetest' in db_broken.list_db_names()
+SystemExit: Could not initialize schema in database
+            'gocept.testdb.tests-...-templatetest'.
+>>> db_template in db_broken.list_db_names()
 False
 
 Clean up:
@@ -244,20 +252,20 @@ the same name prefix as the Database instance used for dropping them all. For
 PostgreSQL, this clean-up method doesn't by default drop the template database
 if one was created:
 
->>> db = gocept.testdb.PostgreSQL(db_template='templatetest')
+>>> db = gocept.testdb.PostgreSQL(db_template=db_template)
 >>> db.drop_all()  # create a well-defined server state wrt the default prefix
 >>> db_count_0 = len(db.list_db_names())
 >>> db.create()
 >>> gocept.testdb.PostgreSQL().create()
->>> db.create_db('gocept.testdb.tests-foo')
->>> db.create_db('gocept.testdb.tests-bar')
+>>> db.create_db(pid_prefix + 'foo')
+>>> db.create_db(pid_prefix + 'bar')
 >>> len(db.list_db_names()) - db_count_0
 5
 >>> db.drop_all()
 >>> len(db.list_db_names()) - db_count_0
 3
->>> db.drop_db('gocept.testdb.tests-foo')
->>> db.drop_db('gocept.testdb.tests-bar')
+>>> db.drop_db(pid_prefix + 'foo')
+>>> db.drop_db(pid_prefix + 'bar')
 >>> len(db.list_db_names()) - db_count_0
 1
 
@@ -283,24 +291,23 @@ test-database naming convention with any of the prefixes passed as
 command-line arguments (clean up first):
 
 >>> import gocept.testdb.cmdline
->>> gocept.testdb.cmdline.drop_all(
-...     ['gocept.testdb.tests-foo', 'gocept.testdb.tests-bar'])
+>>> gocept.testdb.cmdline.drop_all([pid_prefix + 'foo', pid_prefix + 'bar'])
 >>> count_mysql = len(gocept.testdb.db.MySQL().list_db_names())
 >>> count_psql = len(gocept.testdb.db.PostgreSQL().list_db_names())
 
->>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-foo').create()
->>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-bar').create()
->>> gocept.testdb.db.MySQL(prefix='gocept.testdb.tests-bar').create()
+>>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'foo').create()
+>>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'bar').create()
+>>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'bar').create()
 >>> len(gocept.testdb.db.MySQL().list_db_names()) - count_mysql
 3
 
->>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-foo').create()
->>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-bar').create()
->>> gocept.testdb.db.PostgreSQL(prefix='gocept.testdb.tests-bar').create()
+>>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'foo').create()
+>>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'bar').create()
+>>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'bar').create()
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 3
 
->>> system('drop-all gocept.testdb.tests-foo gocept.testdb.tests-bar')
+>>> system('drop-all %s %s' % (pid_prefix + 'foo', pid_prefix + 'bar'))
 >>> len(gocept.testdb.db.MySQL().list_db_names()) - count_mysql
 0
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
@@ -311,12 +318,10 @@ passed will also be dropped. This is how template databases can be dropped
 without having to call ``dropdb`` on each of them:
 
 >>> gocept.testdb.db.PostgreSQL(
-...     prefix='gocept.testdb.tests-foo',
-...     db_template='gocept.testdb.tests-bar').create()
+...     prefix=pid_prefix + 'foo', db_template=pid_prefix + 'bar').create()
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 2
->>> gocept.testdb.cmdline.drop_all(
-...     ['gocept.testdb.tests-foo', 'gocept.testdb.tests-bar'])
+>>> gocept.testdb.cmdline.drop_all([pid_prefix + 'foo', pid_prefix + 'bar'])
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 0
 
@@ -325,15 +330,17 @@ prefix will be dropped, but no attempt will be made to drop a database named
 exactly after the default prefix since in this case, there's no reason to
 assume that a template database by that name should have been created:
 
->>> gocept.testdb.db.PostgreSQL(db_template='testdb').create()
+>>> gocept.testdb.db.PostgreSQL.prefix = pid_prefix
+>>> gocept.testdb.db.PostgreSQL(db_template=pid_prefix).create()
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 2
 >>> gocept.testdb.cmdline.drop_all([])
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 1
->>> gocept.testdb.db.PostgreSQL(db_template='testdb').drop_db('testdb')
+>>> gocept.testdb.db.PostgreSQL(db_template=pid_prefix).drop_db(pid_prefix)
 >>> len(gocept.testdb.db.PostgreSQL().list_db_names()) - count_psql
 0
+>>> gocept.testdb.db.PostgreSQL.prefix = 'testdb'
 
 (We considered an explicit command-line switch for dropping template databases
 but felt that it would be too annoying and test databases shouldn't use a
