@@ -2,13 +2,14 @@
 # See also LICENSE.txt
 
 import gocept.testdb.db
+import os
 import sqlalchemy
 import unittest
 
 
 class PostgreSQL(unittest.TestCase):
 
-    db_template = 'gocept.testdb.tests-template'
+    db_template = 'gocept.testdb.tests-template-%s' % os.getpid()
 
     def drop_all(self):
         db = gocept.testdb.db.PostgreSQL(db_template=self.db_template)

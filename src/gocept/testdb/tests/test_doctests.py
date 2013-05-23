@@ -66,7 +66,11 @@ gocept.testdb.cmdline.drop_all_entry_point()
         )
 
 
+prefix = gocept.testdb.PostgreSQL.prefix
+
+
 def tearDown(test):
+    gocept.testdb.PostgreSQL.prefix = prefix
     shutil.rmtree(test.sql_dir)
     shutil.rmtree(test.bin_dir)
 
