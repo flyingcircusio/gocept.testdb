@@ -3,6 +3,7 @@
 
 import doctest
 import gocept.testdb
+import gocept.testdb.db
 import os
 import os.path
 import shutil
@@ -45,6 +46,11 @@ def system(test):
     return system
 
 
+def list_testdb_names(db):
+    pid = '-PID%s-' % os.getpid()
+    return [x for x in db.list_db_names() if pid in x]
+
+
 def setUp(test):
     test.bin_dir = tempfile.mkdtemp()
     drop_all_path = os.path.join(test.bin_dir, 'drop-all')
@@ -63,14 +69,16 @@ gocept.testdb.cmdline.drop_all_entry_point()
         execute=execute,
         table_names=table_names,
         system=system(test),
+        list_testdb_names=list_testdb_names,
         )
+    gocept.testdb.db.Database.prefix += '-PID%s' % os.getpid()
 
 
-prefix = gocept.testdb.PostgreSQL.prefix
+prefix = gocept.testdb.db.Database.prefix
 
 
 def tearDown(test):
-    gocept.testdb.PostgreSQL.prefix = prefix
+    gocept.testdb.db.Database.prefix = prefix
     shutil.rmtree(test.sql_dir)
     shutil.rmtree(test.bin_dir)
 
