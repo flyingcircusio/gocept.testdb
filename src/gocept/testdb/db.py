@@ -246,7 +246,7 @@ class PostgreSQL(Database):
         if self.db_template:
             try:
                 self.create_template()
-            except SystemExit, e:
+            except SystemExit as e:
                 try:
                     self.drop_db(self.db_template)
                 except:
