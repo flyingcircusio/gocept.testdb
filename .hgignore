@@ -1,5 +1,7 @@
 syntax: glob
 
+*.pyc
+*.egg-info
 .installed.cfg
 bin
 build
