@@ -213,7 +213,8 @@ class MySQL(Database):
     def list_db_names(self):
         raw_list, _ = subprocess.Popen(self.login_args('mysqlshow'),
                                        stdout=subprocess.PIPE).communicate()
-        return [line.split()[1] for line in raw_list.splitlines()[3:-1]]
+        return [line.decode('us-ascii').split()[1]
+                for line in raw_list.splitlines()[3:-1]]
 
     def drop_db(self, db_name):
         assert 0 == subprocess.call(
@@ -302,9 +303,12 @@ class PostgreSQL(Database):
         # Use unaligned output to simplify splitting.
         raw_list, _ = subprocess.Popen(self.login_args('psql', ['-l', '-A']),
                                        stdout=subprocess.PIPE).communicate()
-        return [line.split('|')
-                for line in raw_list.splitlines()[2:-1]
-                if '|' in line]  # XXX Throw away multi-line continuations.
+        result = []
+        for line in raw_list.splitlines()[2:-1]:
+            line = line.decode('us-ascii')
+            if '|' in line:
+                result.append(line.split('|'))
+        return result
 
     def list_db_names(self):
         return [items[0] for items in self.pg_list_db_items()]
