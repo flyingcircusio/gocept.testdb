@@ -4,7 +4,12 @@
 import gocept.testdb.db
 import os
 import sqlalchemy
-import unittest
+import sys
+
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 
 class PostgreSQL(unittest.TestCase):
@@ -38,6 +43,14 @@ class PostgreSQLTests(PostgreSQL):
         self.assertEqual('de_DE.UTF-8', collate_by_db_name[db.db_name])
 
 
+try:
+    import MySQLdb
+    HAVE_MYSQL = True
+except ImportError:
+    HAVE_MYSQL = False
+
+
+@unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
 class StatusTests(unittest.TestCase):
 
     def setUp(self):

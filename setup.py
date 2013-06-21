@@ -1,12 +1,26 @@
 # Copyright (c) 2013 gocept gmbh & co. kg
 # See also LICENSE.txt
 
-import os.path
 from setuptools import setup, find_packages
+import os.path
+import sys
 
 
 def read(*path):
     return open(os.path.join(*path)).read() + '\n\n'
+
+
+tests_require = [
+    'zope.testing',
+    'psycopg2',
+    'mock',
+]
+
+if sys.version_info < (3,):
+    tests_require.append('MySQL-python')
+if sys.version_info < (2, 7):
+    tests_require.append('unittest2')
+
 
 setup(
     name='gocept.testdb',
@@ -33,12 +47,7 @@ setup(
         'SQLAlchemy >= 0.5.6',
         ],
     extras_require=dict(
-        test=[
-            'zope.testing',
-            'MySQL-python',
-            'psycopg2',
-            'mock',
-            ]),
+        test=tests_require),
     entry_points="""\
     [console_scripts]
     drop-all = gocept.testdb.cmdline:drop_all_entry_point
