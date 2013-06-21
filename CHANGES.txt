@@ -4,6 +4,8 @@ Changelog
 1.2 (unreleased)
 ----------------
 
+- Provisional compatibility to Python 3 (no compatible mysql driver exists yet,
+  though).
 - Fixed test code that made implicit assumptions about existing databases on
   the PostgreSQL server used or depended on timing conditions.
 
