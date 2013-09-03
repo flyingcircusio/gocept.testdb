@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.3 (unreleased)
-----------------
+1.2.1 (2013-09-03)
+------------------
 
 - Improve retry logic for dropping databases: ensure that db actually exists
   before trying to drop it (#12706).
