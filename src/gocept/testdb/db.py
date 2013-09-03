@@ -136,15 +136,16 @@ class Database(object):
         Contains retry logic independent from the choice of database engine.
 
         """
-        try:
-            self.drop_db(self.db_name)
-        except AssertionError:
-            # give the database some time to shut down
-            time.sleep(1)
+        for i in range(3):
+            if self.db_name not in self.list_db_names():
+                break
             try:
                 self.drop_db(self.db_name)
             except AssertionError:
-                raise RuntimeError("Could not drop database %r" % self.db_name)
+                # give the database some time to shut down
+                time.sleep(1)
+        else:
+            raise RuntimeError("Could not drop database %r" % self.db_name)
 
     def drop_all(self):
         """Protocol entry point for dropping all test dbs on the server.
