@@ -4,7 +4,6 @@
 import gocept.testdb.db
 import os
 import sqlalchemy
-import sys
 
 try:
     import unittest2 as unittest
