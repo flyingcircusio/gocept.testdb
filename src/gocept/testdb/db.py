@@ -26,7 +26,7 @@ class Database(object):
         else:
             self.db_name = '%s-%f' % (self.prefix, time.time())
         self.db_host = (os.environ.get('%s_HOST' % self.protocol.upper())
-                       or 'localhost')
+                        or 'localhost')
         self.db_user = os.environ.get('%s_USER' % self.protocol.upper())
         self.db_pass = os.environ.get('%s_PASS' % self.protocol.upper())
         self.dsn = self.get_dsn(self.db_name)
