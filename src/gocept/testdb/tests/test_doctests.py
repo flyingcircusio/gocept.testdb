@@ -3,7 +3,7 @@
 
 import doctest
 import gocept.testdb
-import gocept.testdb.db
+import gocept.testdb.base
 import os
 import os.path
 import shutil
@@ -71,14 +71,14 @@ gocept.testdb.cmdline.drop_all_entry_point()
         system=system(test),
         list_testdb_names=list_testdb_names,
         )
-    gocept.testdb.db.Database.prefix += '-PID%s' % os.getpid()
+    gocept.testdb.base.Database.prefix += '-PID%s' % os.getpid()
 
 
-prefix = gocept.testdb.db.Database.prefix
+prefix = gocept.testdb.base.Database.prefix
 
 
 def tearDown(test):
-    gocept.testdb.db.Database.prefix = prefix
+    gocept.testdb.base.Database.prefix = prefix
     shutil.rmtree(test.sql_dir)
     shutil.rmtree(test.bin_dir)
 

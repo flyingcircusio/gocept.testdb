@@ -1,16 +1,16 @@
 # Copyright (c) 2011 gocept gmbh & co. kg
 # See also LICENSE.txt
 
-import gocept.testdb.db
+import gocept.testdb
 import sys
 
 
 def drop_mysql(name=None):
     try:
         if name is None:
-            gocept.testdb.db.MySQL().drop_all()
+            gocept.testdb.MySQL().drop_all()
         else:
-            gocept.testdb.db.MySQL(prefix=name).drop_all()
+            gocept.testdb.MySQL(prefix=name).drop_all()
     except OSError:
         pass
 
@@ -18,9 +18,9 @@ def drop_mysql(name=None):
 def drop_postgresql(name=None):
     try:
         if name is None:
-            gocept.testdb.db.PostgreSQL().drop_all()
+            gocept.testdb.PostgreSQL().drop_all()
         else:
-            gocept.testdb.db.PostgreSQL(
+            gocept.testdb.PostgreSQL(
                 prefix=name, db_template=name).drop_all(drop_template=True)
     except OSError:
         pass

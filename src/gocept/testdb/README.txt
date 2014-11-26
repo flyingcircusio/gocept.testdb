@@ -287,35 +287,35 @@ databases from both the PostgreSQL and MySQL servers that match the
 test-database naming convention with any of the prefixes passed as
 command-line arguments (clean up first):
 
->>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'foo').create()
->>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'bar').create()
->>> gocept.testdb.db.MySQL(prefix=pid_prefix + 'bar').create()
->>> len(list_testdb_names(gocept.testdb.db.MySQL()))
+>>> gocept.testdb.MySQL(prefix=pid_prefix + 'foo').create()
+>>> gocept.testdb.MySQL(prefix=pid_prefix + 'bar').create()
+>>> gocept.testdb.MySQL(prefix=pid_prefix + 'bar').create()
+>>> len(list_testdb_names(gocept.testdb.MySQL()))
 3
 
->>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'foo').create()
->>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'bar').create()
->>> gocept.testdb.db.PostgreSQL(prefix=pid_prefix + 'bar').create()
->>> len(list_testdb_names(gocept.testdb.db.PostgreSQL()))
+>>> gocept.testdb.PostgreSQL(prefix=pid_prefix + 'foo').create()
+>>> gocept.testdb.PostgreSQL(prefix=pid_prefix + 'bar').create()
+>>> gocept.testdb.PostgreSQL(prefix=pid_prefix + 'bar').create()
+>>> len(list_testdb_names(gocept.testdb.PostgreSQL()))
 3
 
 >>> system('drop-all %s %s' % (pid_prefix + 'foo', pid_prefix + 'bar'))
->>> len(list_testdb_names(gocept.testdb.db.MySQL()))
+>>> len(list_testdb_names(gocept.testdb.MySQL()))
 0
->>> len(list_testdb_names(gocept.testdb.db.PostgreSQL()))
+>>> len(list_testdb_names(gocept.testdb.PostgreSQL()))
 0
 
 On the PostgreSQL server, databases named exactly after any of the names
 passed will also be dropped. This is how template databases can be dropped
 without having to call ``dropdb`` on each of them:
 
->>> gocept.testdb.db.PostgreSQL(
+>>> gocept.testdb.PostgreSQL(
 ...     prefix=pid_prefix + 'foo', db_template=pid_prefix + 'bar').create()
->>> len(list_testdb_names(gocept.testdb.db.PostgreSQL()))
+>>> len(list_testdb_names(gocept.testdb.PostgreSQL()))
 2
 >>> import gocept.testdb.cmdline
 >>> gocept.testdb.cmdline.drop_all([pid_prefix + 'foo', pid_prefix + 'bar'])
->>> len(list_testdb_names(gocept.testdb.db.PostgreSQL()))
+>>> len(list_testdb_names(gocept.testdb.PostgreSQL()))
 0
 
 If the script is called without arguments, test databases matching the default
@@ -323,20 +323,20 @@ prefix will be dropped, but no attempt will be made to drop a database named
 exactly after the default prefix since in this case, there's no reason to
 assume that a template database by that name should have been created:
 
->>> db = gocept.testdb.db.PostgreSQL(
-...     db_template=gocept.testdb.db.PostgreSQL.prefix)
+>>> db = gocept.testdb.PostgreSQL(
+...     db_template=gocept.testdb.PostgreSQL.prefix)
 >>> db.create()
 >>> len(list_testdb_names(db))
 1
->>> gocept.testdb.db.PostgreSQL.prefix in db.list_db_names()
+>>> gocept.testdb.PostgreSQL.prefix in db.list_db_names()
 True
 >>> gocept.testdb.cmdline.drop_all([])
 >>> len(list_testdb_names(db))
 0
->>> gocept.testdb.db.PostgreSQL.prefix in db.list_db_names()
+>>> gocept.testdb.PostgreSQL.prefix in db.list_db_names()
 True
->>> db.drop_db(gocept.testdb.db.PostgreSQL.prefix)
->>> gocept.testdb.db.PostgreSQL.prefix in db.list_db_names()
+>>> db.drop_db(gocept.testdb.PostgreSQL.prefix)
+>>> gocept.testdb.PostgreSQL.prefix in db.list_db_names()
 False
 
 (We considered an explicit command-line switch for dropping template databases
