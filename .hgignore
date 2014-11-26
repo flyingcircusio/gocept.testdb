@@ -1,7 +1,8 @@
 syntax: glob
 
-*.pyc
 *.egg-info
+*.pyc
+.cache
 .installed.cfg
 bin
 build
