@@ -29,6 +29,8 @@ class Database(object):
                         or 'localhost')
         self.db_user = os.environ.get('%s_USER' % self.protocol.upper())
         self.db_pass = os.environ.get('%s_PASS' % self.protocol.upper())
+        self.cmd_postfix = os.environ.get(
+            '%s_COMMAND_POSTFIX' % self.protocol.upper()) or ''
         self.dsn = self.get_dsn(self.db_name)
 
     def get_dsn(self, db_name):
@@ -189,8 +191,9 @@ class MySQL(Database):
 
     def __init__(self, schema_path=None, prefix=None, db_name=None,
                  cmd_postfix=''):
-        self.cmd_postfix = cmd_postfix
         return super(MySQL, self).__init__(schema_path, prefix, db_name)
+        if cmd_postfix:
+            self.cmd_postfix = cmd_postfix
 
     def login_args(self, command, extra_args=()):
         args = [

@@ -4,7 +4,8 @@ Changelog
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add environment variable ``MYSQL_COMMAND_POSTFIX`` to use MySQL commands like
+  `mysql5` instead of `mysql`.
 
 
 1.2.1 (2013-09-03)

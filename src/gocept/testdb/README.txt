@@ -27,7 +27,8 @@ the server:
 This will use the appropriate command-line tools to create a database with a
 random name (you can specify a prefix if desired).
 Login information can be specified via environment variables
-(``MYSQL_HOST`` default localhost, ``MYSQL_USER`` default None, ``MYSQL_PASS`` default None)
+(``MYSQL_HOST`` default localhost, ``MYSQL_USER`` default None,
+``MYSQL_PASS`` default None, ``MYSQL_COMMAND_POSTFIX`` default '')
 
 The dbapi DSN can then be used to connect to the database:
 

@@ -4,5 +4,6 @@
 MYSQL_HOST = localhost
 MYSQL_USER = wsoc
 MYSQL_PASS = secret
+MYSQL_COMMAND_POSTFIX = 5
 POSTGRES_HOST = localhost
 POSTGRES_USER = wsoc

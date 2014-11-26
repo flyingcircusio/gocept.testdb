@@ -2,7 +2,10 @@ Development
 ===========
 
 To run the `buildout` of this package copy ``local.cfg.example`` to
-``local.cfg`` and edit it to match your needs.
+``local.cfg`` and edit it to match your needs:
+
+* ``MYSQL_COMMAND_POSTFIX`` is needed if your MySQL commands look like `mysql5`
+  instead of `mysql`
 
 The source code is available at https://bitbucket.org/gocept/gocept.testdb
 
