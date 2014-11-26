@@ -50,7 +50,7 @@ except ImportError:
 
 
 @unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
-class StatusTests(unittest.TestCase):
+class MySQLStatusTests(unittest.TestCase):
 
     def setUp(self):
         self.db = gocept.testdb.db.MySQL()
