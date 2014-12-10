@@ -1,13 +1,7 @@
 # Copyright (c) 2008-2013 gocept gmbh & co. kg
 # See also LICENSE.txt
-
-import gocept.testdb
+from gocept.testdb.testing import unittest
 import sqlalchemy
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 try:
     import MySQLdb
@@ -20,6 +14,7 @@ except ImportError:
 class MySQLStatusTests(unittest.TestCase):
 
     def setUp(self):
+        import gocept.testdb
         self.db = gocept.testdb.MySQL()
 
     def tearDown(self):
