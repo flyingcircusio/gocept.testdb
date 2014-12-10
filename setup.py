@@ -11,9 +11,10 @@ def read(*path):
 
 
 tests_require = [
-    'zope.testing',
-    'psycopg2',
+    'gocept.testing',
     'mock',
+    'psycopg2',
+    'zope.testing',
 ]
 
 if sys.version_info < (3,):
