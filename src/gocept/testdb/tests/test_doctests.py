@@ -70,7 +70,7 @@ gocept.testdb.cmdline.drop_all_entry_point()
         table_names=table_names,
         system=system(test),
         list_testdb_names=list_testdb_names,
-        )
+    )
     gocept.testdb.base.Database.prefix += '-PID%s' % os.getpid()
 
 
@@ -86,10 +86,10 @@ def tearDown(test):
 def test_suite():
     return doctest.DocFileSuite(
         'README.txt',
-        optionflags=doctest.ELLIPSIS
-                    | doctest.NORMALIZE_WHITESPACE
-                    | doctest.REPORT_NDIFF,
+        optionflags=doctest.ELLIPSIS |
+        doctest.NORMALIZE_WHITESPACE |
+        doctest.REPORT_NDIFF,
         setUp=setUp,
         tearDown=tearDown,
         package=gocept.testdb,
-        )
+    )

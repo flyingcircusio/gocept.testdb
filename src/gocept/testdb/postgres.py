@@ -122,7 +122,7 @@ class PostgreSQL(Database):
     def drop_all(self, drop_template=False):
         for name in self.list_db_names():
             if (name == self.db_template and drop_template or
-                self._matches_db_naming_scheme(name)):
+                    self._matches_db_naming_scheme(name)):
                 self.drop_db(name)
 
     def drop_db(self, db_name):
