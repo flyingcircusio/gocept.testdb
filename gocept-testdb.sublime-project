@@ -1,0 +1,29 @@
+{
+  "folders":
+  [
+    {
+      "follow_symlinks": true,
+      "path": ".",
+      "folder_exclude_patterns": [
+                "*.egg-info",
+                ".cache",
+                ".hgcheck",
+                ".tox",
+                "__pycache__",
+                "bin",
+                "develop-eggs",
+                "downloads",
+                "htmlcov",
+                "parts",
+                "var",
+                ],
+      "file_exclude_patterns": [
+                        ".installed.cfg",
+                        ".mr.developer.cfg",
+                        ".coverage",
+                        ".hgtags",
+                        "testreport.xml",
+                        ]
+    }
+  ]
+}
