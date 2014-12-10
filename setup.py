@@ -14,7 +14,6 @@ tests_require = [
     'gocept.testing',
     'mock',
     'psycopg2',
-    'zope.testing',
 ]
 
 if sys.version_info < (3,):
