@@ -22,7 +22,7 @@ class MySQLStatusTests(unittest.TestCase):
         self.db = gocept.testdb.MySQL()
 
     def tearDown(self):
-        self.db.drop_all
+        self.db.drop_all()
 
     def test_nonexistent_db_returns_exists_False(self):
         self.assertFalse(self.db.exists)
