@@ -101,8 +101,8 @@ class PostgreSQL(Database):
     def _get_db_mtime(self, database):
         dsn = self.get_dsn(database)
         conn = sqlalchemy.create_engine(dsn).connect()
-        result = conn.execute(
-            'SELECT schema_mtime FROM tmp_functest;').cursor.next()
+        result = next(conn.execute(
+            'SELECT schema_mtime FROM tmp_functest;').cursor)
         conn.invalidate()
         conn.close()
         if result:
