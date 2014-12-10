@@ -3,7 +3,6 @@
 from gocept.testdb.testing import unittest
 import gocept.testdb.testing
 import gocept.testing.assertion
-import sqlalchemy
 
 try:
     import MySQLdb
@@ -15,45 +14,13 @@ else:
 
 
 @unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
-class MySQLStatusTests(unittest.TestCase):
-
-    def setUp(self):
-        import gocept.testdb
-        self.db = gocept.testdb.MySQL()
-
-    def tearDown(self):
-        self.db.drop_all()
-
-    def test_nonexistent_db_returns_exists_False(self):
-        self.assertFalse(self.db.exists)
-
-    def test_existing_db_returns_exists_True(self):
-        self.db.create()
-        self.assertTrue(self.db.exists)
-
-    def test_nonexistent_db_counts_as_not_testing(self):
-        self.assertFalse(self.db.is_testing)
-
-    def test_db_with_special_table_counts_as_testing(self):
-        self.db.create()
-        self.assertTrue(self.db.is_testing)
-
-    def test_db_without_special_table_counts_as_not_testing(self):
-        self.db.create()
-        engine = sqlalchemy.create_engine(self.db.dsn)
-        engine.connect().execute('DROP TABLE tmp_functest')
-        self.assertFalse(self.db.is_testing)
-
-
-@unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
 class MySQLTests(gocept.testdb.testing.TestCase,
                  gocept.testing.assertion.String,
                  gocept.testing.assertion.Exceptions):
     """Testing ..mysql.MySQL"""
 
     def tearDown(self):
-        import gocept.testdb
-        gocept.testdb.MySQL().drop_all()
+        self.makeOne(create_db=False).drop_all()
         super(MySQLTests, self).tearDown()
 
     def makeOne(self, db_name=None, create_db=True):
@@ -63,31 +30,39 @@ class MySQLTests(gocept.testdb.testing.TestCase,
             db.create()
         return db
 
-    def connect(self, db):
-        engine = sqlalchemy.create_engine(db.dsn)
-        return engine.connect()
+    def test_nonexistent_db_returns_exists_False(self):
+        self.assertFalse(self.makeOne(create_db=False).exists)
+
+    def test_existing_db_returns_exists_True(self):
+        self.assertTrue(self.makeOne(create_db=True).exists)
+
+    def test_nonexistent_db_counts_as_not_testing(self):
+        self.assertFalse(self.makeOne(create_db=False).is_testing)
+
+    def test_db_with_special_table_counts_as_testing(self):
+        self.assertTrue(self.makeOne(create_db=True).is_testing)
+
+    def test_db_without_special_table_counts_as_not_testing(self):
+        db = self.makeOne(create_db=True)
+        self.execute(db.dsn, 'DROP TABLE tmp_functest')
+        self.assertFalse(db.is_testing)
 
     def test_takes_configuration_from_environment(self):
-        db = self.makeOne()
+        db = self.makeOne(create_db=False)
         self.assertStartsWith('mysql://', db.dsn)
         self.assertIn('localhost/testdb-', db.dsn)
 
     def test_created_database_contains_marker_table(self):
-        conn = self.connect(self.makeOne())
+        db = self.makeOne()
         # The database is marked as a testing database by creating a table
         # called 'tmp_functest' in it:
         with self.assertNothingRaised():
-            conn.execute('SELECT * from tmp_functest')
-
-    def test_conveniences_properties_are_set(self):
-        db = self.makeOne()
-        self.assertTrue(db.exists)
-        self.assertTrue(db.is_testing)
+            self.execute(db.dsn, 'SELECT * from tmp_functest')
 
     def test_schema_gets_loaded(self):
-        conn = self.connect(self.makeOne())
+        db = self.makeOne()
         with self.assertNothingRaised():
-            conn.execute('SELECT * from foo')
+            self.execute(db.dsn, 'SELECT * from foo')
 
     def test_name_of_database_can_be_specified(self):
         db = self.makeOne(db_name='mytestdb', create_db=False)
