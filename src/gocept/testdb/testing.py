@@ -31,7 +31,7 @@ class TestCase(unittest.TestCase):
         super(TestCase, self).tearDown()
         gocept.testdb.base.Database.prefix = self._orig_prefix
         shutil.rmtree(self.sql_dir)
-        #shutil.rmtree(test.bin_dir)
+        # shutil.rmtree(test.bin_dir)
 
     def list_testdb_names(self, db):
         pid = '-PID%s-' % os.getpid()
