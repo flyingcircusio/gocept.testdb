@@ -3,7 +3,6 @@
 import gocept.testdb
 import gocept.testing.assertion
 import os
-import sqlalchemy
 import sqlalchemy.exc
 import time
 
@@ -158,3 +157,28 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
             "Could not initialize schema in database "
             "'gocept.testdb.tests-PID...-templatetest'.", str(err.exception))
         self.assertNotIn(self.db_template, db_broken.list_db_names())
+
+    def test_drop_all_drops_all_databases(self):
+        # There's a method to drop all test databases that may have been left
+        # on the server by previous test runs by removing all (but only those)
+        # databases whose name matches the test database naming scheme of
+        # ``gocept.testdb`` and using the same name prefix as the Database
+        # instance used for dropping them all. This clean-up method doesn't by
+        # default drop the template database if one was created:
+        db = self.makeOne(db_template=self.db_template)
+        self.makeOne()
+        db.create_db(self.pid_prefix + 'foo')
+        db.create_db(self.pid_prefix + 'bar')
+        self.assertEqual(5, len(self.list_testdb_names(db)))
+        db.drop_all()
+        self.assertEqual(3, len(self.list_testdb_names(db)))
+        db.drop_db(self.pid_prefix + 'foo')
+        db.drop_db(self.pid_prefix + 'bar')
+        self.assertEqual(1, len(self.list_testdb_names(db)))
+
+        # However, the clean-up method can be instructed to drop the template
+        # database as well:
+        self.assertIn(db.db_template, db.list_db_names())
+        db.drop_all(drop_template=True)
+        self.assertNotIn(db.db_template, db.list_db_names())
+        self.assertEqual([], self.list_testdb_names(db))
