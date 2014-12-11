@@ -8,10 +8,10 @@ import sqlalchemy.exc
 import time
 
 
-class PostgreSQL(gocept.testdb.testing.TestCase,
-                 gocept.testing.assertion.String,
-                 gocept.testing.assertion.Exceptions,
-                 gocept.testing.assertion.Ellipsis):
+class PostgreSQLTests(gocept.testdb.testing.TestCase,
+                      gocept.testing.assertion.String,
+                      gocept.testing.assertion.Exceptions,
+                      gocept.testing.assertion.Ellipsis):
     """Testing ..postgres.PostgreSQL."""
 
     db_template = 'gocept.testdb.tests-template-%s' % os.getpid()
@@ -20,7 +20,7 @@ class PostgreSQL(gocept.testdb.testing.TestCase,
         try:
             self.drop_all()
         finally:
-            super(PostgreSQL, self).tearDown()
+            super(PostgreSQLTests, self).tearDown()
 
     def drop_all(self):
         self.makeOne(db_template=self.db_template, create_db=False).drop_all(
