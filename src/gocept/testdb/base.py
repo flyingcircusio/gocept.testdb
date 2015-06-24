@@ -1,6 +1,3 @@
-# Copyright (c) 2008-2013 gocept gmbh & co. kg
-# See also LICENSE.txt
-
 import os
 import sqlalchemy
 import time
