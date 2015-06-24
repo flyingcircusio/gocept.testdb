@@ -1,6 +1,3 @@
-# Copyright (c) 2013 gocept gmbh & co. kg
-# See also LICENSE.txt
-
 from setuptools import setup, find_packages
 import os.path
 import sys
@@ -29,6 +26,7 @@ setup(
     description='Creates and drops temporary databases for testing purposes.',
     long_description=(
         read('README.txt') +
+        read('COPYRIGHT.txt') +
         '.. contents:: :depth: 1\n\n' +
         read('src', 'gocept', 'testdb', 'README.txt') +
         read('HACKING.txt') +
