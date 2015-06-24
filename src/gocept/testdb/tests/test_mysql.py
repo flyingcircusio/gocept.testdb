@@ -1,5 +1,3 @@
-# Copyright (c) 2008-2013 gocept gmbh & co. kg
-# See also LICENSE.txt
 import gocept.testdb.testing
 import gocept.testing.assertion
 
