@@ -1,4 +1,3 @@
-from gocept.testdb.testing import unittest
 import gocept.testdb.testing
 import os.path
 import shutil
@@ -6,14 +5,6 @@ import stat
 import subprocess
 import sys
 import tempfile
-
-try:
-    import MySQLdb
-    HAVE_MYSQL = True
-except ImportError:
-    HAVE_MYSQL = False
-else:
-    del MySQLdb
 
 
 class CommandlineTests(gocept.testdb.testing.TestCase):
@@ -77,7 +68,6 @@ gocept.testdb.cmdline.drop_all_entry_point()
         args[0] = os.path.join(self.bin_dir, args[0])
         subprocess.call(args)
 
-    @unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
     def test_drops_mysql_and_postgresql_databases(self):
         # The Database classes' ``drop_all`` functionality is available
         # independently through a command-line script named ``drop-all``. The

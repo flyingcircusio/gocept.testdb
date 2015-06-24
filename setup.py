@@ -14,17 +14,16 @@ tests_require = [
     'gocept.testing',
     'mock',
     'psycopg2',
+    'PyMySQL',
 ]
 
-if sys.version_info < (3,):
-    tests_require.append('MySQL-python')
 if sys.version_info < (2, 7):
     tests_require.append('unittest2')
 
 
 setup(
     name='gocept.testdb',
-    version='1.2.2.dev0',
+    version='1.3.dev0',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
@@ -63,7 +62,10 @@ Programming Language :: Python
 Programming Language :: Python :: 2
 Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
-Programming Language :: Python :: 2 :: Only
+Programming Language :: Python :: 3
+Programming Language :: Python :: 3.2
+Programming Language :: Python :: 3.3
+Programming Language :: Python :: 3.4
 Programming Language :: Python :: Implementation :: CPython
 Topic :: Database
 Topic :: Software Development :: Testing
