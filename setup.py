@@ -53,11 +53,20 @@ setup(
     drop-all = gocept.testdb.cmdline:drop_all_entry_point
     """,
     classifiers = """\
+Development Status :: 5 - Production/Stable
+Intended Audience :: Developers
+License :: OSI Approved
 License :: OSI Approved :: Zope Public License
+Natural Language :: English
+Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 2
 Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 2 :: Only
+Programming Language :: Python :: Implementation :: CPython
+Topic :: Database
+Topic :: Software Development :: Testing
+Topic :: Utilities
 """[:-1].split('\n')
 )

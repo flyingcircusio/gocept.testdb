@@ -7,12 +7,15 @@ To run the `buildout` of this package copy ``local.cfg.example`` to
 * ``MYSQL_COMMAND_POSTFIX`` is needed if your MySQL commands look like `mysql5`
   instead of `mysql`
 
+* MySQL has to open a port for the tests to connect to. Configure this in your
+  `my.cnf`.
+
 Running tests
 -------------
 
 Install tox_ and run the tests calling ``tox``.
 
-_tox : https://pypi.python.org/pypi/tox
+.. _tox : https://pypi.python.org/pypi/tox
 
 Source code
 -----------
