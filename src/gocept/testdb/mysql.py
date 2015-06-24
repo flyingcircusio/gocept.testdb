@@ -1,5 +1,3 @@
-# Copyright (c) 2008-2013 gocept gmbh & co. kg
-# See also LICENSE.txt
 from .base import Database
 import subprocess
 

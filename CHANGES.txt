@@ -101,7 +101,7 @@ Changelog
 
 - Added documentation how to develop this package further.
 
-- Added doumentation about usage of `Database prefix`_
+- Added doumentation about usage of `Database prefix`.
 
 
 0.3 (2010-10-15)
