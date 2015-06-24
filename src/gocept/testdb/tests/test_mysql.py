@@ -1,19 +1,9 @@
 # Copyright (c) 2008-2013 gocept gmbh & co. kg
 # See also LICENSE.txt
-from gocept.testdb.testing import unittest
 import gocept.testdb.testing
 import gocept.testing.assertion
 
-try:
-    import MySQLdb
-    HAVE_MYSQL = True
-except ImportError:
-    HAVE_MYSQL = False
-else:
-    del MySQLdb
 
-
-@unittest.skipUnless(HAVE_MYSQL, 'no mysql driver available')
 class MySQLTests(gocept.testdb.testing.TestCase,
                  gocept.testing.assertion.String,
                  gocept.testing.assertion.Exceptions):

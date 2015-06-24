@@ -1,11 +1,16 @@
 Changelog
 =========
 
-1.2.2 (unreleased)
-------------------
+1.3 (unreleased)
+----------------
+
+- Officially support Python 3.2 up to Python 3.4.
+
+- Switch PyMySQL driver to support Python 3 for MySQL.
 
 - Add environment variable ``MYSQL_COMMAND_POSTFIX`` to use MySQL commands like
   `mysql5` instead of `mysql`.
+
 
 
 1.2.1 (2013-09-03)

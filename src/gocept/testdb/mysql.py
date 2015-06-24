@@ -4,7 +4,7 @@ import subprocess
 
 class MySQL(Database):
 
-    protocol = 'mysql'
+    protocol = 'mysql+pymysql'
     environ_prefix = 'MYSQL'
 
     def __init__(self, schema_path=None, prefix=None, db_name=None,
