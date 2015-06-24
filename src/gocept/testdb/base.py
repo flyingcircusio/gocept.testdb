@@ -9,6 +9,7 @@ import time
 class Database(object):
 
     protocol = NotImplemented
+    environ_prefix = NotImplemented
 
     prefix = 'testdb'
 
@@ -21,11 +22,11 @@ class Database(object):
         else:
             self.db_name = '%s-%f' % (self.prefix, time.time())
         self.db_host = (
-            os.environ.get('%s_HOST' % self.protocol.upper()) or 'localhost')
-        self.db_user = os.environ.get('%s_USER' % self.protocol.upper())
-        self.db_pass = os.environ.get('%s_PASS' % self.protocol.upper())
+            os.environ.get('%s_HOST' % self.environ_prefix) or 'localhost')
+        self.db_user = os.environ.get('%s_USER' % self.environ_prefix)
+        self.db_pass = os.environ.get('%s_PASS' % self.environ_prefix)
         self.cmd_postfix = os.environ.get(
-            '%s_COMMAND_POSTFIX' % self.protocol.upper()) or ''
+            '%s_COMMAND_POSTFIX' % self.environ_prefix) or ''
         self.dsn = self.get_dsn(self.db_name)
 
     def get_dsn(self, db_name):
@@ -35,7 +36,8 @@ class Database(object):
             if self.db_pass:
                 login += ':' + self.db_pass
             login += '@'
-        return '%s://%s%s/%s' % (self.protocol, login, self.db_host, db_name)
+        return '{proto}://{login}{host}/{name}'.format(
+            proto=self.protocol, login=login, host=self.db_host, name=db_name)
 
     def create(self):
         """Protocol entry point for setting up the database on the server.
