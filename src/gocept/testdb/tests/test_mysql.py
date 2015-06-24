@@ -49,7 +49,7 @@ class MySQLTests(gocept.testdb.testing.TestCase,
 
     def test_takes_configuration_from_environment(self):
         db = self.makeOne(create_db=False)
-        self.assertStartsWith('mysql://', db.dsn)
+        self.assertStartsWith('{0}://'.format(db.protocol), db.dsn)
         self.assertIn('localhost/testdb-', db.dsn)
 
     def test_created_database_contains_marker_table(self):

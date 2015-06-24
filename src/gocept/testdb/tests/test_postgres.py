@@ -73,7 +73,7 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
 
     def test_name_of_database_can_be_specified(self):
         db = self.makeOne(db_name='mytestdb', create_db=False)
-        self.assertEqual('postgresql://localhost/mytestdb', db.dsn)
+        self.assertEndsWith('/mytestdb', db.dsn)
 
     def test_drop_drops_database(self):
         db = self.makeOne()

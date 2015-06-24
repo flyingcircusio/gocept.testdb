@@ -9,6 +9,7 @@ import subprocess
 class PostgreSQL(Database):
 
     protocol = 'postgresql'
+    environ_prefix = 'POSTGRES'
 
     def __init__(self, encoding=None, db_template=None,
                  force_template=False, lc_collate=None,
