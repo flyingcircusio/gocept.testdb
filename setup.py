@@ -34,7 +34,7 @@ setup(
         read('src', 'gocept', 'testdb', 'README.txt') +
         read('HACKING.txt') +
         read('CHANGES.txt')
-        ),
+    ),
     url='https://bitbucket.org/gocept/gocept.testdb',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
@@ -45,7 +45,7 @@ setup(
     install_requires=[
         'setuptools',
         'SQLAlchemy >= 0.5.6',
-        ],
+    ],
     extras_require=dict(
         test=tests_require),
     entry_points="""\
