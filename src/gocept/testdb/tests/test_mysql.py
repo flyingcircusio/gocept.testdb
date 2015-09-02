@@ -38,7 +38,7 @@ class MySQLTests(gocept.testdb.testing.TestCase,
     def test_takes_configuration_from_environment(self):
         db = self.makeOne(create_db=False)
         self.assertStartsWith('{0}://'.format(db.protocol), db.dsn)
-        self.assertIn('localhost/testdb-', db.dsn)
+        self.assertIn('/testdb-', db.dsn)
 
     def test_created_database_contains_marker_table(self):
         db = self.makeOne()
@@ -54,7 +54,7 @@ class MySQLTests(gocept.testdb.testing.TestCase,
 
     def test_name_of_database_can_be_specified(self):
         db = self.makeOne(db_name='mytestdb', create_db=False)
-        self.assertEndsWith('localhost/mytestdb', db.dsn)
+        self.assertEndsWith('/mytestdb', db.dsn)
 
     def test_drop_all_drops_all_databases(self):
         # There's a method to drop all test databases that may have been left

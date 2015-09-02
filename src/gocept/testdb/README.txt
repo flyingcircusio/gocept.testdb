@@ -30,10 +30,10 @@ First, instantiate a test database object and have it create the database on
 the server. You can specify the name or the prefix of the database:
 
 >>> gocept.testdb.MySQL(schema_path=schema, db_name='mytestdb').dsn
-'mysql+pymysql://...localhost/mytestdb'
+'mysql+pymysql://.../mytestdb'
 >>> db = gocept.testdb.MySQL(schema_path=schema, prefix='my-tests')
 >>> db.dsn
-'mysql+pymysql://...localhost/my-tests-...'
+'mysql+pymysql://.../my-tests-...'
 >>> db.create()
 
 This will use the appropriate command-line tools to create a database with a
