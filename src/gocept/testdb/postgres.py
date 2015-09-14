@@ -66,6 +66,9 @@ class PostgreSQL(Database):
 
     def create_db(self, db_name, db_template=None, lc_collate=None):
         create_args = []
+        create_args.extend(['-h', self.db_host])
+        if self.db_user is not None:
+            create_args.extend(['-U', self.db_user])
         if db_template is not None:
             create_args.extend(['-T', self.db_template])
         if self.lc_collate is not None:
