@@ -10,8 +10,6 @@ Changelog
 1.3a1 (2015-09-24)
 ------------------
 
-- Add the host and user arguments for createdb command
-
 - Officially support Python 3.2 up to Python 3.4.
 
 - Switch PyMySQL driver to support Python 3 for MySQL.
