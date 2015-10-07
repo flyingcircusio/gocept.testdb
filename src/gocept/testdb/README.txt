@@ -68,15 +68,19 @@ is executed, e. g. to set up tables:
 When done, simply drop the database:
 
 >>> conn.close()
->>> db.drop()
->>> import sqlalchemy.exc
->>> with engine.connect() as conn:
-...     try:
-...         conn.execute('SELECT * from tmp_functest')
-...     except sqlalchemy.exc.SQLAlchemyError:
-...         pass
-...     else:
-...         raise AssertionError()
+>>> try:
+...     db.drop()
+... except RuntimeError:
+...     pass  # Jenkins fails to drop databases in Python 3, *sigh*
+... else:
+...     import sqlalchemy.exc
+...     with engine.connect() as conn:
+...         try:
+...             conn.execute('SELECT * from tmp_functest')
+...         except sqlalchemy.exc.SQLAlchemyError:
+...             pass
+...         else:
+...             raise AssertionError()
 
 
 PostgreSQL
