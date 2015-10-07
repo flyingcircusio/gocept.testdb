@@ -25,4 +25,4 @@ The source code is available at https://bitbucket.org/gocept/gocept.testdb
 Bug reports
 -----------
 
-Please report any bugs you find to <mail@gocept.com>.
+Please report any bugs you find to https://bitbucket.org/gocept/gocept.testdb/issues
