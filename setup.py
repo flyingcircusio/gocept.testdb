@@ -20,7 +20,7 @@ if sys.version_info < (2, 7):
 
 setup(
     name='gocept.testdb',
-    version='1.3a2.dev0',
+    version='1.3',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
