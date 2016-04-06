@@ -1,0 +1,7 @@
+include *.example
+include *.py
+include *.txt
+include buildout.cfg
+include pytest.ini
+include tox.ini
+recursive-include src *.txt
