@@ -11,3 +11,9 @@ omit = */interfaces.py
 
 [html]
 directory = coverage-report
+
+[paths]
+source =
+   src/gocept/testdb
+   .tox/*/lib/python*/site-packages/gocept/testdb
+   .tox/pypy*/site-packages/gocept/testdb
