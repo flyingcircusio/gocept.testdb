@@ -34,7 +34,7 @@ setup(
     ),
     url='https://bitbucket.org/gocept/gocept.testdb',
     packages=find_packages('src'),
-    package_dir = {'': 'src'},
+    package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,
     license='ZPL 2.1',
@@ -49,7 +49,7 @@ setup(
     [console_scripts]
     drop-all = gocept.testdb.cmdline:drop_all_entry_point
     """,
-    classifiers = """\
+    classifiers="""\
 Development Status :: 5 - Production/Stable
 Intended Audience :: Developers
 License :: OSI Approved
