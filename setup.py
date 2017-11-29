@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 import os.path
-import sys
 
 
 def read(*path):
@@ -14,13 +13,9 @@ tests_require = [
     'PyMySQL',
 ]
 
-if sys.version_info < (2, 7):
-    tests_require.append('unittest2')
-
-
 setup(
     name='gocept.testdb',
-    version='1.4.dev0',
+    version='2.0.dev0',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
@@ -58,12 +53,11 @@ Natural Language :: English
 Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 2
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.3
 Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
+Programming Language :: Python :: 3.6
 Programming Language :: Python :: Implementation :: CPython
 Topic :: Database
 Topic :: Software Development :: Testing
