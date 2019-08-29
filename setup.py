@@ -27,7 +27,7 @@ setup(
         read('HACKING.txt') +
         read('CHANGES.txt')
     ),
-    url='https://bitbucket.org/gocept/gocept.testdb',
+    url='https://github.com/gocept/gocept.testdb',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,

@@ -20,9 +20,9 @@ Install tox_ and run the tests calling ``tox``.
 Source code
 -----------
 
-The source code is available at https://bitbucket.org/gocept/gocept.testdb
+The source code is available at https://github.com/gocept/gocept.testdb
 
 Bug reports
 -----------
 
-Please report any bugs you find to https://bitbucket.org/gocept/gocept.testdb/issues
+Please report any bugs you find to https://github.com/gocept/gocept.testdb/issues
