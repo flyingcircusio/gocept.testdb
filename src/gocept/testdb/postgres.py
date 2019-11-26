@@ -133,7 +133,7 @@ class PostgreSQL(Database):
             for command in [
                 ("UPDATE pg_database SET datallowconn = false "
                  "WHERE datname = '" + db_name + "'"),
-                "ALTER DATABASE " + db_name + " CONNECTION LIMIT 1",
+                'ALTER DATABASE "' + db_name + '" CONNECTION LIMIT 1',
                 ("SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
                  "WHERE datname = '" + db_name + "'"),
             ]:
