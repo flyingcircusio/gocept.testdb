@@ -20,6 +20,8 @@ class Database(object):
             self.db_name = '%s-%f' % (self.prefix, time.time())
         self.db_host = (
             os.environ.get('%s_HOST' % self.environ_prefix) or 'localhost')
+        self.db_port = int(
+            os.environ.get('%s_PORT' % self.environ_prefix) or '5432')
         self.db_user = os.environ.get('%s_USER' % self.environ_prefix)
         self.db_pass = os.environ.get('%s_PASS' % self.environ_prefix)
         self.cmd_postfix = os.environ.get(
@@ -33,8 +35,9 @@ class Database(object):
             if self.db_pass:
                 login += ':' + self.db_pass
             login += '@'
-        return '{proto}://{login}{host}/{name}'.format(
-            proto=self.protocol, login=login, host=self.db_host, name=db_name)
+        return '{proto}://{login}{host}:{port}/{name}'.format(
+            proto=self.protocol, login=login, host=self.db_host,
+            port=self.db_port, name=db_name)
 
     def create(self):
         """Protocol entry point for setting up the database on the server.

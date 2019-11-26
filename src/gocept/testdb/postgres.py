@@ -1,5 +1,8 @@
 from .base import Database
+from pyembedpg import PyEmbedPg
 import os
+import psycopg2
+import random
 import sqlalchemy
 import subprocess
 
@@ -8,6 +11,7 @@ class PostgreSQL(Database):
 
     protocol = 'postgresql'
     environ_prefix = 'POSTGRES'
+    is_standalone = False
 
     def __init__(self, encoding=None, db_template=None,
                  force_template=False, lc_collate=None,
@@ -137,3 +141,41 @@ class PostgreSQL(Database):
             ]:
                 subprocess.call(self.login_args('psql', ['-c', command]))
             assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
+
+
+class PostgreSQLStandalone(PostgreSQL):
+
+    is_standalone = True
+    pg_version = '9.6.11'
+    db_user = 'dbuser'
+    db_pass = 'dbpass'
+    db_host = 'localhost'
+    db_name = None
+    db_port_range = range(15432, 15440)
+
+    def __init__(self, *args, **kw):
+        if self.db_name is None:
+            self.db_name = 'testdb%s' % "%012x" % random.getrandbits(48)
+
+        postgres = PyEmbedPg(self.pg_version)
+        runner = postgres.start(self.db_port_range)
+        try:
+            runner.create_user(self.db_user, self.db_pass)
+        except psycopg2.errors.DuplicateObject:
+            pass
+
+        self.db_port = runner.running_port
+
+        self.dsn = self.get_dsn(self.db_name)
+        self.postgres = runner
+
+    def create(self):
+        self.postgres.create_database(self.db_name, self.db_user)
+        self.mark_testing(self.db_name)
+
+    def drop_db(self, db_name):
+        pass
+
+    @property
+    def exists(self):
+        return False

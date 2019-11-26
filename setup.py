@@ -37,6 +37,7 @@ setup(
     install_requires=[
         'setuptools',
         'SQLAlchemy >= 0.5.6',
+        'pyembedpg',
     ],
     extras_require=dict(
         test=tests_require),
