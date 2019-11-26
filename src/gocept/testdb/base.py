@@ -1,4 +1,5 @@
 import os
+import random
 import sqlalchemy
 import time
 
@@ -17,7 +18,8 @@ class Database(object):
         if db_name:
             self.db_name = db_name
         else:
-            self.db_name = '%s-%f' % (self.prefix, time.time())
+            self.db_name = '%s-%s' % (
+                self.prefix, "%012x" % random.getrandbits(48))
         self.db_host = (
             os.environ.get('%s_HOST' % self.environ_prefix) or 'localhost')
         self.db_port = int(
