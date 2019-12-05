@@ -5,7 +5,7 @@ python:
 - 3.7
 - 3.8
 addons:
-  mariadb: '10.0'
+  mariadb: '10.4'
 install: pip install tox-travis coveralls
 script:
 - tox
