@@ -7,7 +7,7 @@ precision = 2
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
-fail_under = 94.0
+fail_under = 93.0
 
 [html]
 directory = coverage-report
