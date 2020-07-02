@@ -26,6 +26,8 @@ class MySQL(Database):
         args = [
             command + self.cmd_postfix,
             '-h', self.db_host]
+        if self.db_port:
+            args.extend(['-P', self.db_port, '--protocol=tcp'])
         if self.db_user:
             args.extend(['-u', self.db_user])
         if self.db_pass:
