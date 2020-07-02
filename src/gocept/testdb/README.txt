@@ -127,9 +127,9 @@ parameters can be specified in the constructor. They are used when creating the
 database.
 
 >>> gocept.testdb.PostgreSQL(encoding='UTF8', db_name='mytestdb').dsn
-'postgresql://...localhost/mytestdb'
+'postgresql://...localhost.../mytestdb'
 >>> gocept.testdb.PostgreSQL(prefix='my-tests').dsn
-'postgresql://...localhost/my-tests-...'
+'postgresql://...localhost.../my-tests-...'
 
 
 Templates

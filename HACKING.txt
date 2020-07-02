@@ -17,6 +17,24 @@ Install tox_ and run the tests calling ``tox``.
 
 .. _tox : https://pypi.python.org/pypi/tox
 
+Using docker containers for the tests
+-------------------------------------
+
+Prerequisites
++++++++++++++
+
+* ``mysqladmin`` and ``mysql`` have to be on $PATH.
+* ``createdb`` has to be on $PATH.
+* docker run --name mysql56 -e MYSQL_ROOT_PASSWORD=84_L224JF0GlTXcL -d -p 3307:3306 mysql:5.6
+* docker run --name postgres96 -e POSTGRES_PASSWORD=j§V7iJY@1xTG67J@ -d -p 5433:5432 postgres:9.6
+* echo "localhost:5433:*:postgres:j§V7iJY@1xTG67J@" >> ~/.pgpass
+* chmod 600 ~/.pgpass
+
+Run the tests
++++++++++++++
+
+* MYSQL_PORT=3307 MYSQL_USER=root MYSQL_PASS=84_L224JF0GlTXcL POSTGRES_PORT=5433 POSTGRES_USER=postgres tox
+
 Source code
 -----------
 
