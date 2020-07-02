@@ -4,10 +4,10 @@ source = gocept.testdb
 
 [report]
 precision = 2
-omit = */interfaces.py
-       */interfaces
-       */tests/*
-       */tests.py
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+fail_under = 94.0
 
 [html]
 directory = coverage-report

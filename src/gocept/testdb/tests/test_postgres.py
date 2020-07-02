@@ -58,7 +58,7 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
         db = self.makeOne(create_db=False)
         self.assertStartsWith('postgresql://', db.dsn)
         hostname = 'localhost'
-        if db.db_port:
+        if db.db_port:  # pragma: no cover
             hostname = '{}:{}'.format(hostname, db.db_port)
         self.assertIn('{}/testdb-PID'.format(hostname), db.dsn)
 

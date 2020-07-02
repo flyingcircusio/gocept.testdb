@@ -36,14 +36,14 @@ class PostgreSQL(Database):
             except SystemExit as e:
                 try:
                     self.drop_db(self.db_template)
-                except:
+                except:  # pragma: no cover
                     pass
                 raise e
             try:
                 self.create_db(
                     self.db_name,
                     db_template=self.db_template)
-            except AssertionError:
+            except AssertionError:  # pragma: no cover
                 raise SystemExit(
                     "Could not create database %r from template %r" %
                     (self.db_name, self.db_template))

@@ -74,7 +74,7 @@ class Database(object):
         database couldn't be created.
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def create_schema(self, db_name):
         """Implementation of how to load a schema into an existing database.
@@ -83,7 +83,7 @@ class Database(object):
         schema couldn't be loaded.
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def connect(self):
         return sqlalchemy.create_engine(self.get_dsn(self.db_name))
@@ -123,7 +123,7 @@ class Database(object):
             engine.dispose()
 
     def list_db_names(self):
-        """Returns a list of names of all databases that exist on the server.
+        """Return a list of names of all databases that exist on the server.
 
         Implementation depends on choice of database engine.
 
@@ -141,10 +141,10 @@ class Database(object):
                 break
             try:
                 self.drop_db(self.db_name)
-            except AssertionError:
+            except AssertionError:  # pragma: no cover
                 # give the database some time to shut down
                 time.sleep(1)
-        else:
+        else:  # pragma: no cover
             raise RuntimeError("Could not drop database %r" % self.db_name)
 
     def drop_all(self):

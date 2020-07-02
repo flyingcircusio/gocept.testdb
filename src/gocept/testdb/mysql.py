@@ -39,7 +39,7 @@ class MySQL(Database):
         call = self.login_args('mysqladmin', ['create', db_name])
         try:
             assert 0 == subprocess.call(call), " ".join(call)
-        except OSError as e:
+        except OSError as e:  # pragma: no cover
             raise AssertionError(str(e), " ".join(call))
 
     def create_schema(self, db_name):
@@ -60,5 +60,5 @@ class MySQL(Database):
             assert 0 == subprocess.call(
                 self.login_args('mysqladmin', ['--force', 'drop', db_name]),
                 **kw)
-        except TimeoutExpired:
+        except TimeoutExpired:  # pragma: no cover
             pass

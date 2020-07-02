@@ -8,7 +8,7 @@ def drop_mysql(name=None):
             gocept.testdb.MySQL().drop_all()
         else:
             gocept.testdb.MySQL(prefix=name).drop_all()
-    except OSError:
+    except OSError:  # pragma: no cover
         pass
 
 
@@ -19,7 +19,7 @@ def drop_postgresql(name=None):
         else:
             gocept.testdb.PostgreSQL(
                 prefix=name, db_template=name).drop_all(drop_template=True)
-    except OSError:
+    except OSError:  # pragma: no cover
         pass
 
 
