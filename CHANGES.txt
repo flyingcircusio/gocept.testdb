@@ -4,16 +4,29 @@ Changelog
 5.0 (unreleased)
 ----------------
 
-*Caution:* This release is based on version 1.3 ignoring the changes made in
+Backwards incompatible changes
+++++++++++++++++++++++++++++++
+
+- *Caution:* This release is based on version 1.3 ignoring the changes made in
  the 4.x releases! At least some of those changes will be added later on.
 
 - Drop support for Python 2.6 and Python 3.3 up to 3.5.
+
+- Remove module ``gocept.testdb.db`` containing only imports for backwards
+  compatibility, import now from ``gocept.testdb.mysql`` resp.
+  ``gocept.testdb.postgres``.
+
+Features
+++++++++
 
 - Officially support Python 3.6 up to 3.8.
 
 - Add support to specify the port to connect to the database, thus the
   environment variables ``MYSQL_PORT`` and ``POSTGRES_PORT`` are taken into
   account. This eases using docker containers on custom ports.
+
+Other changes
++++++++++++++
 
 - Migrate code to Github.
 
