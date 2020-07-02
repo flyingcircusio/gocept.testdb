@@ -1,4 +1,4 @@
-Copyright (c) 2008-2015 gocept gmbh & co. kg and contributors.
+Copyright (c) 2008-2015, 2020 gocept gmbh & co. kg and contributors.
 
 All Rights Reserved.
 
