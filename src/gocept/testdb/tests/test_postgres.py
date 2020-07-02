@@ -1,4 +1,5 @@
 import gocept.testdb
+import gocept.testdb.testing
 import gocept.testing.assertion
 import os
 import sqlalchemy.exc
@@ -43,14 +44,23 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
         self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
 
     def test_can_add_database_with_special_lc_collate(self):
-        db = self.makeOne(lc_collate='de_DE.UTF-8')
+        try:
+            db = self.makeOne(lc_collate='de_DE.UTF-8')
+        except SystemExit:
+            # When using Docker container as suggested in README this call
+            # fails with 'invalid locale name: "de_DE.UTF-8"', so let's skip
+            # the test in that environment:
+            self.skipTest('"de_DE.UTF-8" not supported by database.')
         collate_by_db_name = dict((x[0], x[3]) for x in db.pg_list_db_items())
         self.assertEqual('de_DE.UTF-8', collate_by_db_name[db.db_name])
 
     def test_takes_configuration_from_environment(self):
         db = self.makeOne(create_db=False)
         self.assertStartsWith('postgresql://', db.dsn)
-        self.assertIn('localhost/testdb-PID', db.dsn)
+        hostname = 'localhost'
+        if db.db_port:
+            hostname = '{}:{}'.format(hostname, db.db_port)
+        self.assertIn('{}/testdb-PID'.format(hostname), db.dsn)
 
     def test_created_database_contains_marker_table(self):
         db = self.makeOne()
