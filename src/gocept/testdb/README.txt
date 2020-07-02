@@ -79,11 +79,7 @@ is executed, e. g. to set up tables:
 When done, simply drop the database:
 
 >>> conn.close()
->>> try:
-...     db.drop()
-... except RuntimeError:
-...     pass  # Jenkins fails to drop databases in Python 3, *sigh*
-
+>>> db.drop()
 
 PostgreSQL
 ==========
