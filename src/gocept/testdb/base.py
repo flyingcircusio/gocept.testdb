@@ -57,8 +57,8 @@ class Database(object):
         """
         try:
             self.create_db(db_name)
-        except AssertionError:
-            raise SystemExit("Could not create database %r" % db_name)
+        except AssertionError as e:
+            raise SystemExit("Could not create database %r\n%s" % (db_name, e))
         if self.schema_path:
             try:
                 self.create_schema(db_name)
