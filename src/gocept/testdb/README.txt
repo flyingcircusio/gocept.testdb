@@ -43,6 +43,8 @@ You can use the following environment variables to customize the DSN:
 
 ``MYSQL_HOST``
     hostname, defaults to ``localhost``
+``MYSQL_PORT``
+    port of the database, defaults to use a socket when not set
 ``MYSQL_USER``
     username, defaults to ``None`` which means to use the name of the
     user logged into the operating system.
@@ -92,6 +94,8 @@ You can use the following environment variables to customize the DSN:
 
 ``POSTGRES_HOST``
     hostname, defaults to ``localhost``
+``POSTGRES_PORT``
+    port of the database server, not used when not set, aka 5432
 ``POSTGRES_USER``
     username, defaults to ``None`` which means to use the name of the
     user logged into the operating system.

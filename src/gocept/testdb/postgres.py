@@ -22,6 +22,8 @@ class PostgreSQL(Database):
         args = [
             command,
             '-h', self.db_host]
+        if self.db_port:
+            args.extend(['-p', self.db_port])
         if self.db_user:
             args.extend(['-U', self.db_user])
         args.extend(extra_args)
