@@ -1,5 +1,3 @@
-syntax: glob
-
 *.egg-info
 *.pyc
 *.sublime-workspace
@@ -12,14 +10,15 @@ syntax: glob
 .tox
 bin
 build
-coverage.xml
 coverage-report
+coverage.xml
 develop-eggs
 dist
 doc/_api
 eggs
 htmlcov
 include
+junit-py*.xml
 lib
 local
 local.cfg
