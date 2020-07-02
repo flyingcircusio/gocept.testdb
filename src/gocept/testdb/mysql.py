@@ -36,8 +36,11 @@ class MySQL(Database):
         return args
 
     def create_db(self, db_name):
-        assert 0 == subprocess.call(
-            self.login_args('mysqladmin', ['create', db_name]))
+        call = self.login_args('mysqladmin', ['create', db_name])
+        try:
+            assert 0 == subprocess.call(call), " ".join(call)
+        except OSError as e:
+            raise AssertionError(str(e), " ".join(call))
 
     def create_schema(self, db_name):
         assert 0 == subprocess.call(

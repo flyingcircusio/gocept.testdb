@@ -75,8 +75,8 @@ class PostgreSQL(Database):
             create_args.extend(['-T', 'template0'])
         if self.encoding:
             create_args.extend(['-E', self.encoding])
-        assert 0 == subprocess.call(
-            self.login_args('createdb', create_args + [db_name]))
+        args = self.login_args('createdb', create_args + [db_name])
+        assert 0 == subprocess.call(args), " ".join(args)
 
     def create_schema(self, db_name):
         assert 0 == subprocess.call(
