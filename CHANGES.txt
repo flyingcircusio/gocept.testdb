@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.1 (unreleased)
+5.1 (2020-07-06)
 ----------------
 
 - Forcibly close connections to test database before dropping, so this does not
