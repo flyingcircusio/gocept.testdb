@@ -178,8 +178,4 @@ class Database(object):
             return False
         if pieces[0] != self.prefix:
             return False
-        try:
-            float(pieces[1])
-        except ValueError:
-            return False
-        return True
+        return len(pieces[1]) == 12

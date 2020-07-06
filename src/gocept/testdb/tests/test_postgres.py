@@ -41,7 +41,8 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
     def test_naming_scheme_matches_with_dash_in_prefix(self):
         # regression test
         db = self.makeOne(prefix='foo-bar', create_db=False)
-        self.assertTrue(db._matches_db_naming_scheme('foo-bar-123'))
+        self.assertTrue(db._matches_db_naming_scheme(db.db_name))
+        self.assertTrue(db._matches_db_naming_scheme('foo-bar-123abc456efg'))
 
     def test_can_add_database_with_special_lc_collate(self):
         try:
