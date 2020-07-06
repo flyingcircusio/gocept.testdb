@@ -4,7 +4,9 @@ Changelog
 5.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Forcibly close connections to test database before dropping, so this does not
+  have to be done beforehand. (Ported from 4.x but missing in change log
+  there.)
 
 
 5.0 (2020-07-02)

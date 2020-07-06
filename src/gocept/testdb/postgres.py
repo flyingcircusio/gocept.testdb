@@ -127,4 +127,15 @@ class PostgreSQL(Database):
                 self.drop_db(name)
 
     def drop_db(self, db_name):
-        assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
+        try:
+            assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
+        except AssertionError:
+            for command in [
+                ("UPDATE pg_database SET datallowconn = false "
+                 "WHERE datname = '" + db_name + "'"),
+                "ALTER DATABASE " + db_name + " CONNECTION LIMIT 1",
+                ("SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+                 "WHERE datname = '" + db_name + "'"),
+            ]:
+                subprocess.call(self.login_args('psql', ['-c', command]))
+            assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
