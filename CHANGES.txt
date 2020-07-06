@@ -8,6 +8,9 @@ Changelog
   have to be done beforehand. (Ported from 4.x but missing in change log
   there.)
 
+- Calculate a random database name that is random enough for parallel
+  execution. (Ported from 4.2)
+
 
 5.0 (2020-07-02)
 ----------------
