@@ -1,3 +1,4 @@
+from sqlalchemy.exc import SQLAlchemyError
 import os
 import random
 import sqlalchemy
@@ -107,7 +108,7 @@ class Database(object):
             try:
                 engine.connect().execute('SELECT * from tmp_functest')
                 return True
-            except:
+            except SQLAlchemyError:
                 return False
         finally:
             engine.dispose()
@@ -119,7 +120,7 @@ class Database(object):
             try:
                 engine.connect()
                 return True
-            except:
+            except SQLAlchemyError:
                 return False
         finally:
             engine.dispose()
