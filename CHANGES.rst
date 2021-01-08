@@ -4,6 +4,8 @@ Changelog
 5.2 (unreleased)
 ----------------
 
+- Ensure compatibility with ``pytest > 6.0``.
+
 - Switch CI to GHA.
 
 
