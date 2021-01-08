@@ -12,6 +12,17 @@ on:
 jobs:
   tests:
     services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: TTI06Z80U875E39U
+        ports:
+          - localhost:3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
       postgres:
         image: postgres
         env:
@@ -23,17 +34,17 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - localhost:5432:5432
     strategy:
       matrix:
         config:
         # [Python version, tox env]
-        - ["3.8",   "flake8"]
-        - ["2.7",   "py27"]
-        - ["3.6",   "py36"]
-        - ["3.7",   "py37"]
+        # - ["3.8",   "flake8"]
+        # - ["2.7",   "py27"]
+        # - ["3.6",   "py36"]
+        # - ["3.7",   "py37"]
         - ["3.8",   "py38"]
-        - ["3.8",   "coverage"]
+        # - ["3.8",   "coverage"]
 
     runs-on: ubuntu-latest
     name: ${{ matrix.config[1] }}
@@ -45,7 +56,7 @@ jobs:
         python-version: ${{ matrix.config[0] }}
     - name: Setup PostgreSQL environment
       run: |
-        echo "0.0.0.0:5432:*:postgres:P0sTGrE5*Pa55W0rt!" >> ~/.pgpass
+        echo "localhost:5432:*:postgres:P0sTGrE5*Pa55W0rt!" >> ~/.pgpass
         chmod 600 ~/.pgpass
     - name: Pip cache
       uses: actions/cache@v2
@@ -60,10 +71,9 @@ jobs:
         pip install tox
     - name: Test
       env:
-        POSTGRES_HOST: 0.0.0.0
         POSTGRES_USER: postgres
         MYSQL_USER: root
-        MYSQL_PASS: root
+        MYSQL_PASS: TTI06Z80U875E39U
       run: tox -e ${{ matrix.config[1] }} -- -vv --timeout=60
     - name: Coverage
       if: matrix.config[1] == 'coverage'
