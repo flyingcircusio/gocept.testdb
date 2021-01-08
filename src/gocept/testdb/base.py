@@ -107,7 +107,7 @@ class Database(object):
             try:
                 engine.connect().execute('SELECT * from tmp_functest')
                 return True
-            except:
+            except:  # noqa: E722 bare except
                 return False
         finally:
             engine.dispose()
@@ -119,7 +119,7 @@ class Database(object):
             try:
                 engine.connect()
                 return True
-            except:
+            except:  # noqa: E722 bare except
                 return False
         finally:
             engine.dispose()

@@ -36,7 +36,7 @@ class PostgreSQL(Database):
             except SystemExit as e:
                 try:
                     self.drop_db(self.db_template)
-                except:  # pragma: no cover
+                except:  # noqa: E722 bare except pragma: no cover
                     pass
                 raise e
             try:

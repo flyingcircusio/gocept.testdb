@@ -20,12 +20,12 @@ setup(
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
     long_description=(
-        read('README.txt') +
-        read('COPYRIGHT.txt') +
+        read('README.rst') +
+        read('COPYRIGHT.rst') +
         '.. contents:: :depth: 1\n\n' +
-        read('src', 'gocept', 'testdb', 'README.txt') +
-        read('HACKING.txt') +
-        read('CHANGES.txt')
+        read('src', 'gocept', 'testdb', 'README.rst') +
+        read('HACKING.rst') +
+        read('CHANGES.rst')
     ),
     url='https://github.com/gocept/gocept.testdb',
     packages=find_packages('src'),

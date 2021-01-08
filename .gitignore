@@ -23,4 +23,5 @@ lib
 local
 local.cfg
 parts
+pyvenv.cfg
 testreport*.xml

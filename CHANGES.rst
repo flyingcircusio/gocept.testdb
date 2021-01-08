@@ -4,7 +4,7 @@ Changelog
 5.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Switch CI to GHA.
 
 
 5.1 (2020-07-06)
