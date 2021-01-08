@@ -46,7 +46,6 @@ jobs:
     - uses: mirromutth/mysql-action@v1.1
       if: matrix.config[1] != 'flake8'
       with:
-        container port: 3306 # Optional, default value is 3306. The port of container
         mysql root password: TTI06Z80U875E39U
     - name: Setup PostgreSQL environment
       run: |
