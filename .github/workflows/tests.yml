@@ -12,17 +12,6 @@ on:
 jobs:
   tests:
     services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: TTI06Z80U875E39U
-        ports:
-          - localhost:3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
       postgres:
         image: postgres
         env:
@@ -54,6 +43,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.config[0] }}
+    - uses: mirromutth/mysql-action@v1.1
+      if: matrix.config[1] != 'flake8'
+      with:
+        container port: 3306 # Optional, default value is 3306. The port of container
+        mysql root password: TTI06Z80U875E39U
     - name: Setup PostgreSQL environment
       run: |
         echo "localhost:5432:*:postgres:P0sTGrE5*Pa55W0rt!" >> ~/.pgpass
