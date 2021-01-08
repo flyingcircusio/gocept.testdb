@@ -62,7 +62,6 @@ jobs:
       env:
         POSTGRES_HOST: 0.0.0.0
         POSTGRES_USER: postgres
-        MYSQL_HOST: 0.0.0.0
         MYSQL_USER: root
         MYSQL_PASS: root
       run: tox -e ${{ matrix.config[1] }} -- -vv --timeout=60
