@@ -1,0 +1,79 @@
+name: tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    type: [ "opened", "reopened", "synchronize" ]
+  schedule:
+    - cron: '0 12 * * 0'  # run once a week on Sunday
+
+jobs:
+  tests:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: P0sTGrE5*Pa55W0rt!
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    strategy:
+      matrix:
+        config:
+        # [Python version, tox env]
+        - ["3.8",   "flake8"]
+        - ["2.7",   "py27"]
+        - ["3.6",   "py36"]
+        - ["3.7",   "py37"]
+        - ["3.8",   "py38"]
+        - ["3.8",   "coverage"]
+
+    runs-on: ubuntu-latest
+    name: ${{ matrix.config[1] }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.config[0] }}
+    - uses: mirromutth/mysql-action@v1.1
+      if: matrix.config[1] != 'flake8'
+      with:
+        mysql root password: TTI06Z80U875E39U
+    - name: Setup PostgreSQL environment
+      run: |
+        echo "localhost:5432:*:postgres:P0sTGrE5*Pa55W0rt!" >> ~/.pgpass
+        chmod 600 ~/.pgpass
+    - name: Pip cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('setup.*', 'tox.ini') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox
+    - name: Test
+      env:
+        POSTGRES_HOST: localhost
+        POSTGRES_USER: postgres
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_USER: root
+        MYSQL_PASS: TTI06Z80U875E39U
+      run: tox -e ${{ matrix.config[1] }} -- -vv --timeout=60
+    - name: Coverage
+      if: matrix.config[1] == 'coverage'
+      run: |
+        pip install coveralls coverage-python-version
+        coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

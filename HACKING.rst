@@ -25,7 +25,7 @@ Prerequisites
 
 * ``mysqladmin`` and ``mysql`` have to be on $PATH.
 * ``createdb`` has to be on $PATH.
-* Run the follwing commands (you might change the used passwords)::
+* Run the follwing commands (you might change the passwords used)::
 
     docker run --name mysql56 -e MYSQL_ROOT_PASSWORD=84_L224JF0GlTXcL -d -p 3307:3306 mysql:5.6
     docker run --name postgres96 -e POSTGRES_PASSWORD=j§V7iJY@1xTG67J@ -d -p 5433:5432 postgres:9.6

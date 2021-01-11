@@ -6,6 +6,8 @@ Changelog
 
 - Ensure compatibility with ``pytest > 6.0``.
 
+- Switch CI to GHA.
+
 
 5.1 (2020-07-06)
 ----------------
