@@ -6,6 +6,8 @@ Changelog
 
 - Ensure compatibility with ``pytest > 6.0``.
 
+- Add support for Python 3.9.
+
 - Switch CI to GHA.
 
 - Fix PostgreSQL ``drop_db`` to be able to forcibly drop a data base with open
