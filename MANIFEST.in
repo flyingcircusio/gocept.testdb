@@ -1,8 +1,11 @@
 include *.example
+include *.rst
 include *.txt
+include *.yaml
 include .coveragerc
 include buildout.cfg
 include pytest.ini
 include tox.ini
 
+recursive-include src *.rst
 recursive-include src *.txt
