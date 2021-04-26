@@ -6,6 +6,8 @@ Changelog
 
 - Ensure compatibility with ``pytest > 6.0``.
 
+- Add support for Python 3.9.
+
 - Switch CI to GHA.
 
 
