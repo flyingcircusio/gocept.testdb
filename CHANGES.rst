@@ -8,6 +8,9 @@ Changelog
 
 - Switch CI to GHA.
 
+- Fix PostgreSQL ``drop_db`` to be able to forcibly drop a data base with open
+  connections, even though there is no database with the same name as the user.
+
 
 5.1 (2020-07-06)
 ----------------

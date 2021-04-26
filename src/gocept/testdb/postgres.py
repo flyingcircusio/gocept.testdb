@@ -137,5 +137,6 @@ class PostgreSQL(Database):
                 ("SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
                  "WHERE datname = '" + db_name + "'"),
             ]:
-                subprocess.call(self.login_args('psql', ['-c', command]))
+                subprocess.call(self.login_args('psql', [
+                    '--dbname=postgres', '-c', command]))
             assert 0 == subprocess.call(self.login_args('dropdb', [db_name]))
