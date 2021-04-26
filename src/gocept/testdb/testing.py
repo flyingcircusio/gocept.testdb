@@ -49,11 +49,13 @@ class TestCase(unittest.TestCase):
     def execute(self, dsn, cmd, fetch=False):
         engine = sqlalchemy.create_engine(dsn)
         conn = engine.connect()
-        result = conn.execute(cmd)
-        if fetch:
-            result = result.fetchall()
-        conn.invalidate()
-        conn.close()
+        try:
+            result = conn.execute(cmd)
+            if fetch:
+                result = result.fetchall()
+        finally:
+            conn.invalidate()
+            conn.close()
         return result
 
     def table_names(self, dsn):
