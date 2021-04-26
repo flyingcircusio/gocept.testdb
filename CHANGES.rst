@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.2 (unreleased)
+5.2 (2021-04-26)
 ----------------
 
 - Ensure compatibility with ``pytest > 6.0``.
