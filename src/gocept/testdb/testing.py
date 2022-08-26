@@ -43,7 +43,7 @@ class TestCase(unittest.TestCase):
             f.write(content)
 
     def connect(self, db):
-        engine = sqlalchemy.create_engine(db.dsn)
+        engine = db.connect()
         return engine.connect()
 
     def execute(self, dsn, cmd, fetch=False):

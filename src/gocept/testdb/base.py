@@ -88,11 +88,13 @@ class Database(object):
         """
         raise NotImplementedError
 
-    def connect(self):
-        return sqlalchemy.create_engine(self.get_dsn(self.db_name))
+    def connect(self, db_name=None):
+        if db_name is None:
+            db_name = self.db_name
+        return sqlalchemy.create_engine(self.get_dsn(db_name))
 
     def mark_testing(self, db_name):
-        engine = sqlalchemy.create_engine(self.get_dsn(db_name))
+        engine = self.connect(db_name)
         meta = sqlalchemy.MetaData()
         meta.bind = engine
         table = sqlalchemy.Table(
