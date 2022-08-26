@@ -24,10 +24,10 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
         self.makeOne(db_template=self.db_template, create_db=False).drop_all(
             drop_template=True)
 
-    def makeOne(self, create_db=True, db_template=None, **kw):
-        import gocept.testdb
-        db = gocept.testdb.PostgreSQL(
-            db_template=db_template, **kw)
+    def makeOne(
+            self, create_db=True, db_template=None,
+            class_=gocept.testdb.PostgreSQL, **kw):
+        db = class_(db_template=db_template, **kw)
         if create_db:
             db.create()
         return db
@@ -166,6 +166,26 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
             "Could not initialize schema in database "
             "'gocept.testdb.tests-PID...-templatetest'.", str(err.exception))
         self.assertNotIn(self.db_template, db_broken.list_db_names())
+
+    def test_postgres__PostgreSQL__after_template_database_has_schema__1(self):
+        """It calls a hook after the template database got the schema."""
+
+        class HookedPostgreSQL(gocept.testdb.PostgreSQL):
+
+            hook_called = False
+
+            def after_template_database_has_schema(self):
+                engine = self.connect(self.db_template)
+                conn = engine.connect()
+                table_names = engine.table_names(connection=conn)
+                conn.invalidate()
+                conn.close()
+                assert table_names == ['tmp_functest']
+                self.__class__.hook_called = True
+
+        assert self.makeOne(
+            db_template=self.db_template, class_=HookedPostgreSQL)
+        assert HookedPostgreSQL.hook_called
 
     def test_drop_all_drops_all_databases(self):
         # There's a method to drop all test databases that may have been left

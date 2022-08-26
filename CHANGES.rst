@@ -4,7 +4,9 @@ Changelog
 5.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add a hook ``after_template_database_has_schema`` to the PostgreSQL class
+  which is called after the template database is created and the schema is
+  created in it. Subclass or patch the method to execute code inside this hook.
 
 
 5.2 (2021-04-26)

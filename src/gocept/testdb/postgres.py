@@ -65,6 +65,14 @@ class PostgreSQL(Database):
 
         self.create_db_from_schema(self.db_template)
         self._set_db_mtime(self.db_template, schema_mtime)
+        self.after_template_database_has_schema()
+
+    def after_template_database_has_schema(self):
+        """Hook which is called after the template database has the schema.
+
+        This hook can be used to manupilate the template database after the
+        schema is created.
+        """
 
     def create_db(self, db_name, db_template=None, lc_collate=None):
         create_args = []
