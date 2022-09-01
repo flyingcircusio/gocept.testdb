@@ -70,7 +70,7 @@ class PostgreSQL(Database):
     def after_template_database_has_schema(self):
         """Hook which is called after the template database has the schema.
 
-        This hook can be used to manupilate the template database after the
+        This hook can be used to manipulate the template database after the
         schema is created.
         """
 
