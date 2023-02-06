@@ -4,7 +4,7 @@ Changelog
 5.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Restrict supported SQLALchemy to < 2.
 
 
 5.2 (2021-04-26)
