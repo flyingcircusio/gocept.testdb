@@ -1,8 +1,8 @@
 Changelog
 =========
 
-5.3 (unreleased)
-----------------
+5.2.1 (2023-03-16)
+------------------
 
 - Restrict supported SQLALchemy to < 2.
 
