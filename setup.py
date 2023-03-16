@@ -16,7 +16,7 @@ tests_require = [
 
 setup(
     name='gocept.testdb',
-    version='5.2.1',
+    version='5.3.dev0',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
