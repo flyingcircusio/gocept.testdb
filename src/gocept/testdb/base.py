@@ -100,7 +100,7 @@ class Database(object):
         table = sqlalchemy.Table(
             'tmp_functest', meta,
             sqlalchemy.Column('schema_mtime', sqlalchemy.Integer))
-        table.create()
+        table.create(bind=engine)
         engine.dispose()
 
     @property
@@ -108,7 +108,9 @@ class Database(object):
         engine = self.connect()
         try:
             try:
-                engine.connect().execute('SELECT * from tmp_functest')
+                engine.connect().execute(sqlalchemy.text(
+                    'SELECT * from tmp_functest'
+                ))
                 return True
             except SQLAlchemyError:
                 return False

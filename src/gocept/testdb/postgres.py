@@ -102,8 +102,9 @@ class PostgreSQL(Database):
     def _get_db_mtime(self, database):
         dsn = self.get_dsn(database)
         conn = sqlalchemy.create_engine(dsn).connect()
-        result = next(conn.execute(
-            'SELECT schema_mtime FROM tmp_functest;').cursor)
+        result = next(conn.execute(sqlalchemy.text(
+            'SELECT schema_mtime FROM tmp_functest;'
+        )).cursor)
         conn.invalidate()
         conn.close()
         if result:
@@ -114,11 +115,15 @@ class PostgreSQL(Database):
 
     def _set_db_mtime(self, database, mtime):
         dsn = self.get_dsn(database)
-        conn = sqlalchemy.create_engine(dsn).connect()
-        conn.execute('INSERT INTO tmp_functest (schema_mtime) VALUES (%s);' %
-                     mtime)
-        conn.invalidate()
-        conn.close()
+        engine = sqlalchemy.create_engine(dsn)
+        with engine.begin() as conn:
+            conn.execute(
+                sqlalchemy.text(
+                    'INSERT INTO tmp_functest (schema_mtime) VALUES (:mtime);'
+                ),
+                {"mtime": mtime}
+            )
+        engine.dispose()
 
     def drop_all(self, drop_template=False):
         for name in self.list_db_names():
