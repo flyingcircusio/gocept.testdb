@@ -43,7 +43,7 @@ class TestCase(unittest.TestCase):
             f.write(content)
 
     def connect(self, db):
-        engine = db.connect()
+        engine = db.create_engine()
         return engine.connect()
 
     def execute(self, dsn, cmd, fetch=False):

@@ -88,13 +88,13 @@ class Database(object):
         """
         raise NotImplementedError
 
-    def connect(self, db_name=None):
+    def create_engine(self, db_name=None):
         if db_name is None:
             db_name = self.db_name
         return sqlalchemy.create_engine(self.get_dsn(db_name))
 
     def mark_testing(self, db_name):
-        engine = self.connect(db_name)
+        engine = self.create_engine(db_name)
         meta = sqlalchemy.MetaData()
         meta.bind = engine
         table = sqlalchemy.Table(
@@ -105,12 +105,13 @@ class Database(object):
 
     @property
     def is_testing(self):
-        engine = self.connect()
+        engine = self.create_engine()
         try:
             try:
-                engine.connect().execute(sqlalchemy.text(
-                    'SELECT * from tmp_functest'
-                ))
+                with engine.begin() as conn:
+                    conn.execute(sqlalchemy.text(
+                        'SELECT * from tmp_functest'
+                    ))
                 return True
             except SQLAlchemyError:
                 return False
@@ -119,11 +120,11 @@ class Database(object):
 
     @property
     def exists(self):
-        engine = self.connect()
+        engine = self.create_engine()
         try:
             try:
-                engine.connect()
-                return True
+                with engine.connect():
+                    return True
             except SQLAlchemyError:
                 return False
         finally:
