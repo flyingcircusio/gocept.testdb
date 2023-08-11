@@ -9,6 +9,8 @@ Backwards incompatible changes
 
 - Dropped support for Python 2.7, 3.6 and 3.7.
 
+- Dropped support for SQLAlchemy < 1.2.
+
 Features
 ++++++++
 
