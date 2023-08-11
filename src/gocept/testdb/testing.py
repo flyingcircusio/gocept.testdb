@@ -60,8 +60,7 @@ class TestCase(unittest.TestCase):
 
     def table_names(self, dsn):
         engine = sqlalchemy.create_engine(dsn)
-        conn = engine.connect()
-        result = engine.table_names(connection=conn)
-        conn.invalidate()
-        conn.close()
+        insp = sqlalchemy.inspect(engine)
+        result = insp.get_table_names()
+        engine.dispose()
         return result
