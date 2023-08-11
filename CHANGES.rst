@@ -16,6 +16,8 @@ Features
 
 - Support Python 3.10 and 3.11.
 
+- Support SQLAlchemy 2.x.
+
 5.2.1 (2023-03-16)
 ------------------
 
