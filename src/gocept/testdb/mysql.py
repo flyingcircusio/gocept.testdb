@@ -1,14 +1,6 @@
 from .base import Database
+from subprocess import TimeoutExpired
 import subprocess
-import sys
-
-
-PY3 = sys.version_info > (3, )
-if PY3:
-    from subprocess import TimeoutExpired
-else:
-    class TimeoutExpired(Exception):
-        """TimeoutExpired was introduced in Python 3.3."""
 
 
 class MySQL(Database):
@@ -53,12 +45,9 @@ class MySQL(Database):
                 for line in raw_list.splitlines()[3:-1]]
 
     def drop_db(self, db_name):
-        kw = {}
-        if PY3:
-            kw['timeout'] = 10  # seconds
         try:
             assert 0 == subprocess.call(
                 self.login_args('mysqladmin', ['--force', 'drop', db_name]),
-                **kw)
+                timeout=10)
         except TimeoutExpired:  # pragma: no cover
             pass
