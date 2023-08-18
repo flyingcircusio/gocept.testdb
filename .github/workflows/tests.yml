@@ -30,19 +30,19 @@ jobs:
       matrix:
         config:
         # [Python version, tox env]
-        - ["2.7",   "py27"]
-        - ["3.6",   "py36"]
         - ["3.7",   "py37"]
         - ["3.8",   "py38"]
         - ["3.9",   "py39"]
+        - ["3.10",  "py310"]
+        - ["3.11",  "py311"]
         - ["3.8",   "coverage"]
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.config[1] }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.config[0] }}
     - uses: mirromutth/mysql-action@v1.1
@@ -54,7 +54,7 @@ jobs:
         echo "localhost:5432:*:postgres:P0sTGrE5*Pa55W0rt!" >> ~/.pgpass
         chmod 600 ~/.pgpass
     - name: Pip cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('setup.*', 'tox.ini') }}
@@ -75,7 +75,7 @@ jobs:
     - name: Coverage
       if: matrix.config[1] == 'coverage'
       run: |
-        pip install coveralls coverage-python-version
+        pip install coveralls
         coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

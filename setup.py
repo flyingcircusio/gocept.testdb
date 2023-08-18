@@ -16,7 +16,7 @@ tests_require = [
 
 setup(
     name='gocept.testdb',
-    version='5.3.dev0',
+    version='6.0.dev0',
     author='gocept <mail at gocept dot com>',
     author_email='mail@gocept.com',
     description='Creates and drops temporary databases for testing purposes.',
@@ -35,6 +35,7 @@ setup(
     zip_safe=False,
     license='ZPL 2.1',
     namespace_packages=['gocept'],
+    python_requires='>=3.7',
     install_requires=[
         'setuptools',
         'SQLAlchemy >= 0.5.6, < 2',
@@ -45,24 +46,23 @@ setup(
     [console_scripts]
     drop-all = gocept.testdb.cmdline:drop_all_entry_point
     """,
-    classifiers="""\
-Development Status :: 5 - Production/Stable
-Intended Audience :: Developers
-License :: OSI Approved
-License :: OSI Approved :: Zope Public License
-Natural Language :: English
-Operating System :: OS Independent
-Programming Language :: Python
-Programming Language :: Python :: 2
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3
-Programming Language :: Python :: 3.6
-Programming Language :: Python :: 3.7
-Programming Language :: Python :: 3.8
-Programming Language :: Python :: 3.9
-Programming Language :: Python :: Implementation :: CPython
-Topic :: Database
-Topic :: Software Development :: Testing
-Topic :: Utilities
-"""[:-1].split('\n')
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved",
+        "License :: OSI Approved :: Zope Public License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Topic :: Database",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Utilities",
+    ]
 )
