@@ -4,19 +4,14 @@ import os.path
 import shutil
 import sqlalchemy
 import tempfile
-
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+import unittest
 
 
 class TestCase(unittest.TestCase):
     """Base test case for package tests."""
 
     def setUp(self):
-        super(TestCase, self).setUp()
+        super().setUp()
         self.sql_dir = tempfile.mkdtemp()
         self.schema = os.path.join(self.sql_dir, 'sample.sql')
         self.write(self.schema, 'CREATE TABLE foo (dummy int);')
@@ -29,7 +24,7 @@ class TestCase(unittest.TestCase):
         gocept.testdb.base.Database.prefix += '-PID%s' % os.getpid()
 
     def tearDown(self):
-        super(TestCase, self).tearDown()
+        super().tearDown()
         gocept.testdb.base.Database.prefix = self._orig_prefix
         shutil.rmtree(self.sql_dir)
         # shutil.rmtree(test.bin_dir)

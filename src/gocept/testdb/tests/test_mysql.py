@@ -9,7 +9,7 @@ class MySQLTests(gocept.testdb.testing.TestCase,
 
     def tearDown(self):
         self.makeOne(create_db=False).drop_all()
-        super(MySQLTests, self).tearDown()
+        super().tearDown()
 
     def makeOne(self, db_name=None, create_db=True):
         import gocept.testdb
@@ -37,7 +37,7 @@ class MySQLTests(gocept.testdb.testing.TestCase,
 
     def test_takes_configuration_from_environment(self):
         db = self.makeOne(create_db=False)
-        self.assertStartsWith('{0}://'.format(db.protocol), db.dsn)
+        self.assertStartsWith(f'{db.protocol}://', db.dsn)
         self.assertIn('/testdb-', db.dsn)
 
     def test_created_database_contains_marker_table(self):

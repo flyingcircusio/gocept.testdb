@@ -7,14 +7,14 @@ Changelog
 Backwards incompatible changes
 ++++++++++++++++++++++++++++++
 
-- Dropped support for Python 2.7, 3.6 and 3.7.
+- Drop support for Python 2.7, 3.6.
 
 - Dropped support for SQLAlchemy < 1.2.
 
 Features
 ++++++++
 
-- Support Python 3.10 and 3.11.
+- Add support for Python 3.10, 3.11.
 
 - Support SQLAlchemy 2.x.
 

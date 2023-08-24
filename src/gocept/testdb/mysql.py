@@ -1,5 +1,4 @@
 from .base import Database
-from subprocess import TimeoutExpired
 import subprocess
 
 
@@ -10,7 +9,7 @@ class MySQL(Database):
 
     def __init__(self, schema_path=None, prefix=None, db_name=None,
                  cmd_postfix=''):
-        return super(MySQL, self).__init__(schema_path, prefix, db_name)
+        super().__init__(schema_path, prefix, db_name)
         if cmd_postfix:
             self.cmd_postfix = cmd_postfix
 
@@ -48,6 +47,7 @@ class MySQL(Database):
         try:
             assert 0 == subprocess.call(
                 self.login_args('mysqladmin', ['--force', 'drop', db_name]),
-                timeout=10)
-        except TimeoutExpired:  # pragma: no cover
+                timeout=10  # seconds
+            )
+        except subprocess.TimeoutExpired:  # pragma: no cover
             pass

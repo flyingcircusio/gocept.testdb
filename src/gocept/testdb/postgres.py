@@ -12,7 +12,7 @@ class PostgreSQL(Database):
     def __init__(self, encoding=None, db_template=None,
                  force_template=False, lc_collate=None,
                  *args, **kw):
-        super(PostgreSQL, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
         self.encoding = encoding
         self.db_template = db_template
         self.lc_collate = lc_collate

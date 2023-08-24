@@ -5,7 +5,7 @@ import sqlalchemy
 import time
 
 
-class Database(object):
+class Database:
 
     protocol = NotImplemented
     environ_prefix = NotImplemented
@@ -19,7 +19,7 @@ class Database(object):
         if db_name:
             self.db_name = db_name
         else:
-            self.db_name = '%s-%s' % (
+            self.db_name = '{}-{}'.format(
                 self.prefix, "%012x" % random.getrandbits(48))
         self.db_host = (
             os.environ.get('%s_HOST' % self.environ_prefix) or 'localhost')
@@ -39,7 +39,7 @@ class Database(object):
             login += '@'
         host = self.db_host
         if self.db_port:
-            host = '{}:{}'.format(host, self.db_port)
+            host = f'{host}:{self.db_port}'
         return '{proto}://{login}{host}/{name}'.format(
             proto=self.protocol, login=login, host=host, name=db_name)
 
@@ -61,7 +61,7 @@ class Database(object):
         try:
             self.create_db(db_name)
         except AssertionError as e:
-            raise SystemExit("Could not create database %r\n%s" % (db_name, e))
+            raise SystemExit(f"Could not create database {db_name!r}\n{e}")
         if self.schema_path:
             try:
                 self.create_schema(db_name)

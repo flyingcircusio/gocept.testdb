@@ -30,6 +30,7 @@ jobs:
       matrix:
         python_version:
         # [Python version, tox env]
+        - ["3.7",   "py37"]
         - ["3.8",   "py38"]
         - ["3.9",   "py39"]
         - ["3.10",  "py310"]
@@ -40,12 +41,12 @@ jobs:
         - "sqlalchemy14"
         - "sqlalchemy2x"
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.python_version[1] }}-${{ matrix.sqlalchemy_version }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python_version[0] }}
     - uses: mirromutth/mysql-action@v1.1
@@ -79,7 +80,7 @@ jobs:
       if: matrix.python_version[0] == '3.8' && matrix.sqlalchemy_version == 'sqlalchemy2x'
       run: |
         tox -e coverage -- -vv --timeout=60
-        pip install coveralls coverage-python-version
+        pip install coveralls
         coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -14,17 +14,17 @@ class CommandlineTests(gocept.testdb.testing.TestCase):
     prefixes = {}
 
     def setUp(self):
-        super(CommandlineTests, self).setUp()
+        super().setUp()
         self.bin_dir = tempfile.mkdtemp()
         drop_all_path = os.path.join(self.bin_dir, 'drop-all')
         with open(drop_all_path, 'w') as f:
             f.write("""\
-#!%s
+#!{}
 import sys
-sys.path = %r
+sys.path = {!r}
 import gocept.testdb.cmdline
 gocept.testdb.cmdline.drop_all_entry_point()
-""" % (sys.executable, sys.path))
+""".format(sys.executable, sys.path))
         os.chmod(drop_all_path, os.stat(drop_all_path).st_mode | stat.S_IEXEC)
 
     def tearDown(self):
@@ -36,7 +36,7 @@ gocept.testdb.cmdline.drop_all_entry_point()
                 self._drop('PostgreSQL')
             finally:
                 self.prefixes = {}
-                super(CommandlineTests, self).tearDown()
+                super().tearDown()
 
     def _make(self, name, create, prefix=None, suffix=None, **kw):
         import gocept.testdb

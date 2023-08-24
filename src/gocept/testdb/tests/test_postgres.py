@@ -18,7 +18,7 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
         try:
             self.drop_all()
         finally:
-            super(PostgreSQLTests, self).tearDown()
+            super().tearDown()
 
     def drop_all(self):
         self.makeOne(db_template=self.db_template, create_db=False).drop_all(
@@ -52,7 +52,7 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
             # fails with 'invalid locale name: "de_DE.UTF-8"', so let's skip
             # the test in that environment:
             self.skipTest('"de_DE.UTF-8" not supported by database.')
-        collate_by_db_name = dict((x[0], x[3]) for x in db.pg_list_db_items())
+        collate_by_db_name = {x[0]: x[3] for x in db.pg_list_db_items()}
         self.assertEqual('de_DE.UTF-8', collate_by_db_name[db.db_name])
 
     def test_takes_configuration_from_environment(self):
@@ -60,8 +60,8 @@ class PostgreSQLTests(gocept.testdb.testing.TestCase,
         self.assertStartsWith('postgresql://', db.dsn)
         hostname = 'localhost'
         if db.db_port:  # pragma: no cover
-            hostname = '{}:{}'.format(hostname, db.db_port)
-        self.assertIn('{}/testdb-PID'.format(hostname), db.dsn)
+            hostname = f'{hostname}:{db.db_port}'
+        self.assertIn(f'{hostname}/testdb-PID', db.dsn)
 
     def test_created_database_contains_marker_table(self):
         db = self.makeOne()
