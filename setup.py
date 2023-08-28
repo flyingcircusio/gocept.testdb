@@ -38,7 +38,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'setuptools',
-        'SQLAlchemy >= 0.5.6, < 2',
+        'SQLAlchemy >= 1.2, < 3',
     ],
     extras_require=dict(
         test=tests_require),

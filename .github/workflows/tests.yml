@@ -28,25 +28,29 @@ jobs:
           - 5432:5432
     strategy:
       matrix:
-        config:
+        python_version:
         # [Python version, tox env]
         - ["3.7",   "py37"]
         - ["3.8",   "py38"]
         - ["3.9",   "py39"]
         - ["3.10",  "py310"]
         - ["3.11",  "py311"]
-        - ["3.8",   "coverage"]
+        sqlalchemy_version:
+        - "sqlalchemy12"
+        - "sqlalchemy13"
+        - "sqlalchemy14"
+        - "sqlalchemy2x"
 
     runs-on: ubuntu-latest
-    name: ${{ matrix.config[1] }}
+    name: ${{ matrix.python_version[1] }}-${{ matrix.sqlalchemy_version }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.config[0] }}
+        python-version: ${{ matrix.python_version[0] }}
     - uses: mirromutth/mysql-action@v1.1
-      if: matrix.config[1] != 'flake8'
+      if: matrix.python_version[1] != 'flake8'
       with:
         mysql root password: TTI06Z80U875E39U
     - name: Setup PostgreSQL environment
@@ -71,11 +75,17 @@ jobs:
         MYSQL_HOST: 127.0.0.1
         MYSQL_USER: root
         MYSQL_PASS: TTI06Z80U875E39U
-      run: tox -e ${{ matrix.config[1] }} -- -vv --timeout=60
+      run: tox -e ${{ matrix.python_version[1] }} -- -vv --timeout=60
     - name: Coverage
-      if: matrix.config[1] == 'coverage'
+      if: matrix.python_version[0] == '3.8' && matrix.sqlalchemy_version == 'sqlalchemy2x'
       run: |
+        tox -e coverage -- -vv --timeout=60
         pip install coveralls
         coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        POSTGRES_HOST: localhost
+        POSTGRES_USER: postgres
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_USER: root
+        MYSQL_PASS: TTI06Z80U875E39U

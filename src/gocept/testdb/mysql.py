@@ -9,7 +9,7 @@ class MySQL(Database):
 
     def __init__(self, schema_path=None, prefix=None, db_name=None,
                  cmd_postfix=''):
-        return super().__init__(schema_path, prefix, db_name)
+        super().__init__(schema_path, prefix, db_name)
         if cmd_postfix:
             self.cmd_postfix = cmd_postfix
 
@@ -44,10 +44,10 @@ class MySQL(Database):
                 for line in raw_list.splitlines()[3:-1]]
 
     def drop_db(self, db_name):
-        kw = {'timeout': 10}  # seconds
         try:
             assert 0 == subprocess.call(
                 self.login_args('mysqladmin', ['--force', 'drop', db_name]),
-                **kw)
+                timeout=10  # seconds
+            )
         except subprocess.TimeoutExpired:  # pragma: no cover
             pass

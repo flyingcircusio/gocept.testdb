@@ -62,8 +62,9 @@ The dbapi DSN can then be used to connect to the database:
 The database is marked as a testing database by creating a table called
 ``tmp_functest`` in it:
 
->>> conn = engine.connect()
->>> ignore = conn.execute('SELECT * from tmp_functest')
+>>> with engine.connect() as conn:
+...     with conn.begin():
+...         ignore = conn.execute(sqlalchemy.text('SELECT * from tmp_functest'))
 
 The database object also offers convenience methods for determining the status
 of the database:
@@ -76,11 +77,13 @@ True
 If you passed a ``schema_path`` to the constructor, the SQL code in this file
 is executed, e. g. to set up tables:
 
->>> ignore = conn.execute('SELECT * from foo')
+>>> with engine.connect() as conn:
+...     with conn.begin():
+...         ignore = conn.execute(sqlalchemy.text('SELECT * from foo'))
 
 When done, simply drop the database:
 
->>> conn.close()
+>>> engine.dispose()
 >>> db.drop()
 
 PostgreSQL
@@ -110,8 +113,8 @@ You can use the following environment variables to customize the DSN:
 >>> db.create()
 >>> engine = sqlalchemy.create_engine(db.dsn)
 >>> conn = engine.connect()
->>> ignore = conn.execute('SELECT * from tmp_functest')
->>> ignore = conn.execute('SELECT * from foo')
+>>> ignore = conn.execute(sqlalchemy.text('SELECT * from tmp_functest'))
+>>> ignore = conn.execute(sqlalchemy.text('SELECT * from foo'))
 >>> conn.invalidate()
 >>> db.drop()
 

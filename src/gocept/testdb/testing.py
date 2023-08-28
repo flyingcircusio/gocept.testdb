@@ -38,25 +38,21 @@ class TestCase(unittest.TestCase):
             f.write(content)
 
     def connect(self, db):
-        engine = db.connect()
+        engine = db.create_engine()
         return engine.connect()
 
     def execute(self, dsn, cmd, fetch=False):
         engine = sqlalchemy.create_engine(dsn)
-        conn = engine.connect()
-        try:
-            result = conn.execute(cmd)
+        with engine.begin() as conn:
+            result = conn.execute(sqlalchemy.text(cmd))
             if fetch:
                 result = result.fetchall()
-        finally:
-            conn.invalidate()
-            conn.close()
+        engine.dispose()
         return result
 
     def table_names(self, dsn):
         engine = sqlalchemy.create_engine(dsn)
-        conn = engine.connect()
-        result = engine.table_names(connection=conn)
-        conn.invalidate()
-        conn.close()
+        insp = sqlalchemy.inspect(engine)
+        result = insp.get_table_names()
+        engine.dispose()
         return result
