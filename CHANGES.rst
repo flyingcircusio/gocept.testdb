@@ -1,7 +1,7 @@
 Changelog
 =========
 
-6.0 (unreleased)
+6.0 (2023-08-28)
 ----------------
 
 Backwards incompatible changes
